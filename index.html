@@ -188,6 +188,44 @@
         transform: translateY(-2px);
       }
 
+      details {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1rem;
+        padding: 1rem;
+      }
+
+      summary {
+        cursor: pointer;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      details p {
+        margin: 0.75rem 0 0;
+        color: var(--text-muted);
+        line-height: 1.6;
+      }
+
+      .info-card details {
+        background: transparent;
+        border: none;
+        padding: 0;
+      }
+
+      .info-card summary {
+        list-style: none;
+      }
+
+      .info-card summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .info-card summary::before {
+        content: '▸ ';
+        color: var(--primary);
+      }
+
       .modal-backdrop {
         position: fixed;
         inset: 0;
@@ -662,11 +700,11 @@
         <div class="hero-grid">
           <div class="hero-copy">
             <span class="badge">Haushaltsinfo</span>
-            <h1>Offenburgs Haushalt: Struktur, Zahlen und Wirkungen.</h1>
-            <p>Diese Seite erklärt die zentralen Mechanismen kommunaler Finanzplanung und zeigt, wie eine Stadt wie Offenburg ihre Mittel vorbereitet, verteilt und prüft.</p>
+            <h1>Der kommunale Haushalt erklärt für Jugendliche in Offenburg.</h1>
+            <p>Hier erfährst du einfach, wo Geld herkommt, wofür es ausgegeben wird und wie die Stadt für Schulen, Spielplätze, Notdienste und Freizeit sorgt.</p>
             <div class="hero-actions">
-              <a class="button primary" href="#haushalt">Haushaltsstruktur</a>
-              <a class="button secondary" href="#transparenz">Mehr Transparenz</a>
+              <a class="button primary" href="#haushalt">Was ist ein Haushalt?</a>
+              <a class="button secondary" href="#transparenz">Warum das wichtig ist</a>
               <a class="button secondary" href="#" id="openQuizHero">Quiz starten</a>
             </div>
           </div>
@@ -683,16 +721,34 @@
 
         <div class="info-cards">
           <article class="info-card">
-            <h3>Einnahmen</h3>
-            <p>Steuern, Gebühren, Zuweisungen und Fördermittel liefern die Grundlage für den kommunalen Haushalt.</p>
+            <h3>Wo Geld herkommt</h3>
+            <p>Der Haushalt bekommt Geld aus Steuern, Gebühren und Zuschüssen vom Bund oder Land. Beispiele: Grundsteuer, Gewerbesteuer und Hundesteuer.</p>
           </article>
           <article class="info-card">
-            <h3>Ausgaben</h3>
-            <p>Ausgaben werden für Verwaltung, Schulen, Soziales, Verkehr, Umwelt und Kultur geplant.</p>
+            <h3>Wofür Geld ausgegeben wird</h3>
+            <p>Das Geld fließt in Schulen, Kindergärten, Spielplätze, Bahnhöfe, Beleuchtung, Notdienste und Feste. Jede Ausgabe betrifft das Leben in der Stadt.</p>
           </article>
           <article class="info-card">
-            <h3>Planung</h3>
-            <p>Die Haushaltsplanung erfolgt jährlich und berücksichtigt aktuelle Bedarfe sowie langfristige Verpflichtungen.</p>
+            <h3>Was der Haushalt kann</h3>
+            <p>Der Haushalt zeigt, was möglich ist: neue Projekte, Reparaturen und Angebote wie Sport, Kultur oder Jugendtreffs.</p>
+          </article>
+        </div>
+
+        <div class="info-cards">
+          <article class="info-card">
+            <h3>Einfach erklärt</h3>
+            <p>Wenn du zum Beispiel eine neue Skate-Anlage willst, braucht es Geld aus dem Haushalt. Die Stadt entscheidet, ob genug Geld dafür da ist.</p>
+          </article>
+          <article class="info-card">
+            <h3>Zum Anklicken</h3>
+            <details>
+              <summary><strong>Steuern</strong> — Was ist das?</summary>
+              <p>Steuern sind Geld, das alle zahlen. Ein Teil davon hilft, Straßen, Schulen und Parks zu finanzieren.</p>
+            </details>
+            <details>
+              <summary><strong>Fördermittel</strong> — Was bedeutet das?</summary>
+              <p>Das sind Zuschüsse von Bund oder Land. Sie helfen, größere Projekte wie Bahnhofs-Sanierungen zu bezahlen.</p>
+            </details>
           </article>
         </div>
       </section>
@@ -707,24 +763,24 @@
 
         <div class="service-list">
           <div class="service-item">
-            <h3>Vorbereitung</h3>
-            <p>Fachämter sammeln Bedarfe, erstellen Vorschläge und bilden damit die Basis des Haushaltsentwurfs.</p>
+            <h3>So wird Geld verteilt</h3>
+            <p>Die Stadt prüft, welche Projekte wichtig sind. Schulen, Spielplätze, Bahnhofsanlagen und Notdienste stehen oft ganz oben auf der Liste.</p>
           </div>
           <div class="service-item">
-            <h3>Beratung</h3>
-            <p>Der Entwurf wird in Ausschüssen und Ratssitzungen diskutiert. Änderungen sowie Ergänzungen werden dabei abgestimmt.</p>
+            <h3>Wie Jugendliche mitmachen können</h3>
+            <p>Jugendliche können Vorschläge machen, beim Jugendrat mitreden oder Fördergelder für eigene Projekte beantragen.</p>
           </div>
           <div class="service-item">
-            <h3>Beschluss</h3>
-            <p>Nach der Beratung beschließt der Rat den Haushalt, der dann die Grundlage für das kommende Jahr bildet.</p>
+            <h3>Wie man Geld beanspruchen kann</h3>
+            <p>Vereine und Gruppen schicken Ideen ins Rathaus. Wenn der Plan passt, kann es Zuschüsse oder Projektgeld geben.</p>
           </div>
           <div class="service-item">
-            <h3>Ausführung</h3>
-            <p>Die bereitgestellten Mittel werden ausgegeben, Projekte umgesetzt und laufende Leistungen finanziert.</p>
+            <h3>Wie Haushalte verglichen werden</h3>
+            <p>Kommunen schauen sich gegenseitig an: Wer hat mehr Geld, wer weniger? Das hilft, besser zu planen und voneinander zu lernen.</p>
           </div>
           <div class="service-item">
-            <h3>Kontrolle</h3>
-            <p>Berichte und Prüfungen analysieren, ob Ausgaben korrekt und wirtschaftlich angelegt waren.</p>
+            <h3>Warum Wirtschaft gut erklärt werden sollte</h3>
+            <p>Wenn Jugendliche verstehen, wie Geld geplant wird, können sie mitreden und wichtige Entscheidungen mitgestalten.</p>
           </div>
         </div>
       </section>
@@ -732,27 +788,27 @@
       <section id="transparenz" class="section reveal">
         <div class="section-intro">
           <div>
-            <h2>Transparenz und Rechenschaft</h2>
-            <p>Offene Informationen zu Haushaltsplänen und Jahresabschlüssen sind wichtig, damit Bürgerinnen und Bürger nachvollziehen können, wie Mittel eingesetzt werden.</p>
+            <h2>Transparenz und Warum das wichtig ist</h2>
+            <p>Jugendliche sollten wissen, wie Geld in der Stadt eingesetzt wird. Je besser das Verständnis, desto einfacher ist es, sich einzumischen.</p>
           </div>
         </div>
 
         <div class="facts">
           <div class="fact">
             <strong>Haushaltsplan</strong>
-            <span>Vorlage für alle geplanten Einnahmen und Ausgaben.</span>
+            <span>Hier steht, wie viel Geld für Schule, Sport und Straßen eingeplant wird.</span>
           </div>
           <div class="fact">
             <strong>Jahresabschluss</strong>
-            <span>Vergleicht Plan und tatsächliche Ergebnisse.</span>
+            <span>Zeigt, was wirklich ausgegeben wurde, und ob genug Geld da war.</span>
           </div>
           <div class="fact">
-            <strong>Prüfbericht</strong>
-            <span>Bewertet Rechtmäßigkeit und Wirtschaftlichkeit der Haushaltsführung.</span>
+            <strong>Rechenschaft</strong>
+            <span>Zeigt, ob Geld sinnvoll verwendet wurde und wer dafür verantwortlich ist.</span>
           </div>
           <div class="fact">
-            <strong>Öffentlichkeit</strong>
-            <span>Berichte und Sitzungen sind oft öffentlich einsehbar.</span>
+            <strong>Mitreden</strong>
+            <span>Jugendliche können Vorschläge machen und beim Haushalt mitreden, zum Beispiel im Jugendparlament.</span>
           </div>
         </div>
       </section>
@@ -760,23 +816,35 @@
       <section id="themen" class="section reveal">
         <div class="section-intro">
           <div>
-            <h2>Schwerpunkte im Haushalt</h2>
-            <p>Die Finanzplanung einer Kommune enthält Schwerpunkte, die sich aus lokalen Anforderungen und strategischen Zielen ergeben.</p>
+            <h2>Wofür das Geld verwendet wird</h2>
+            <p>In Offenburg entscheidet der Haushalt, ob Schulhöfe, Spielplätze, Bahnhöfe oder Notdienste besser werden.</p>
           </div>
         </div>
 
         <div class="news-grid">
           <article class="news-card">
-            <h3>Infrastruktur</h3>
-            <p>Investitionen in Straßen, Gebäude und öffentliche Anlagen sind langfristig angelegt und Teil des jährlichen Haushalts.</p>
+            <h3>Bildung und Kinder</h3>
+            <p>Schulen, Kindergärten und Jugendzentren sind wichtige Ausgaben, damit Kinder und Jugendliche gute Angebote bekommen.</p>
           </article>
           <article class="news-card">
-            <h3>Soziale Leistungen</h3>
-            <p>Ausgaben für Jugendhilfe, Soziales und Seniorenangebote sind zentrale Posten in der kommunalen Planung.</p>
+            <h3>Freizeit und öffentliche Räume</h3>
+            <p>Spielplätze, Veranstaltungen, Sportplätze und Beleuchtung schaffen Orte, die Jugendliche nutzen können.</p>
           </article>
           <article class="news-card">
-            <h3>Klimaschutz</h3>
-            <p>Budgetpositionen für Energieeffizienz, Mobilität und Nachhaltigkeit gewinnen in der Haushaltsplanung an Bedeutung.</p>
+            <h3>Verkehr und Bahnhöfe</h3>
+            <p>Geld fließt in Bahnhofs-Sanierung, Haltestellen, Züge und Wege, damit Jugendliche sicher unterwegs sind.</p>
+          </article>
+          <article class="news-card">
+            <h3>Notdienste</h3>
+            <p>Feuerwehr, Krankenhäuser und Polizei brauchen Geld, damit sie schnell helfen können, wenn es brennt oder ein Unfall passiert.</p>
+          </article>
+          <article class="news-card">
+            <h3>Wohnen und Stadtleben</h3>
+            <p>Altstadt, Seniorenheime und Feste werden geplant, damit das Zusammenleben in der Stadt gut klappt.</p>
+          </article>
+          <article class="news-card">
+            <h3>Einnahmen</h3>
+            <p>Die Stadt bekommt Geld aus Zuschüssen, Gebühren und verschiedenen Steuern wie Grundsteuer, Gewerbesteuer und Hundesteuer.</p>
           </article>
         </div>
       </section>
@@ -784,21 +852,19 @@
       <section id="kontakt" class="section reveal">
         <div class="section-intro">
           <div>
-            <h2>Kontakt</h2>
-            <p>Wenn Sie Kontakt brauchen, melden Sie sich bitte bei den folgenden Anlaufstellen. Rathaus und Bürgerbüro unterstützen Sie bei Fragen rund um Haushalt und Verwaltung.</p>
+            <h2>Wie du selbst mitmachen kannst</h2>
+            <p>Jugendliche können eigene Ideen einbringen, Projektförderung beantragen oder sich im Jugendrat informieren lassen.</p>
           </div>
         </div>
 
         <div class="contact-grid">
           <div class="contact-card">
-            <h3>Rathaus</h3>
-            <p>Rathaus: <strong>0781 82-0</strong></p>
-            <p>Bürgerbüro: <strong>0781 82-2000</strong> / <strong>0781 82-7251</strong></p>
-            <p>Wenn Sie Kontakt benötigen, können Sie sich hier melden. Die Teams helfen gern weiter.</p>
+            <h3>Geld für Projekte</h3>
+            <p>Vereine, Schulen und Gruppen können Mittel beantragen. Wenn du ein Projekt für Jugend oder Sport hast, kannst du anfragen.</p>
           </div>
           <div class="contact-card">
-            <h3>Service und Transparenz</h3>
-            <p>Haushaltsfragen, Bürgeranliegen und Informationswünsche werden über Rathaus und Bürgerbüro koordiniert. Nutzen Sie diese Anlaufstellen, um Unterstützung zu erhalten.</p>
+            <h3>Wichtige Kontakte</h3>
+            <p>Rathaus und Bürgerbüro unterstützen dich bei Förderanträgen. Frage nach dem Jugendhaushalt, Projektförderung oder Beteiligungsangeboten.</p>
           </div>
         </div>
       </section>
