@@ -140,25 +140,41 @@
         width: 42px;
         height: 22px;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.04);
         position: relative;
         flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 8px;
+        gap: 8px;
       }
+
+      .theme-sun, .theme-moon {
+        font-size: 14px;
+        opacity: 0.9;
+        transition: opacity 200ms ease, transform 220ms ease;
+        line-height: 1;
+      }
+
+      .theme-sun { transform: translateX(0); }
+      .theme-moon { transform: translateX(0); }
 
       .theme-toggle-thumb {
         position: absolute;
-        top: 2px;
-        left: 2px;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: var(--text);
-        transition: left 260ms ease, background 260ms ease;
+        top: 6px;
+        left: 8px;
+        width: 22px;
+        height: 22px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #fff, #f2f2f2);
+        box-shadow: 0 6px 18px rgba(2,8,23,0.4);
+        transition: transform 260ms cubic-bezier(.2,.9,.3,1), left 260ms ease;
       }
 
       .theme-toggle.active .theme-toggle-thumb {
-        left: calc(100% - 20px);
-        background: var(--primary);
+        transform: translateX(28px);
+        background: linear-gradient(135deg, var(--primary), var(--primary-strong));
       }
 
       .theme-toggle-text {
@@ -736,9 +752,55 @@
         border-radius: 4px;
       }
 
+      .pie-chart-wrapper {
+        position: relative;
+        width: min(320px, 100%);
+        margin: 0 auto;
+      }
+
+      .pie-chart-wrapper svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .pie-center {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        pointer-events: none;
+        text-align: center;
+      }
+
+      .pie-center-value {
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      .pie-center-text {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      .pie-handle {
+        fill: #ffffff;
+        stroke: rgba(78, 162, 255, 0.95);
+        stroke-width: 3;
+        cursor: grab;
+      }
+
+      .pie-handle:active {
+        cursor: grabbing;
+      }
+
       @media (max-width: 860px) {
         .quiz-grid {
           grid-template-columns: 1fr;
+        }
+
+        .quiz-summary {
+          flex-direction: column;
         }
       }
 
@@ -1019,14 +1081,52 @@
           transform: translateY(0);
         }
       }
+
+      /* Loader styles */
+      .site-loader {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(7,16,26,0.88);
+        z-index: 1200;
+        transition: opacity 320ms ease, visibility 320ms ease;
+      }
+
+      .site-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+      .loader-ring {
+        width: 68px;
+        height: 28px;
+        border-radius: 999px;
+        background: linear-gradient(90deg,var(--primary),var(--primary-strong));
+        box-shadow: 0 18px 60px rgba(78,162,255,0.12);
+        transform-origin: center;
+        animation: loaderPulse 900ms cubic-bezier(.2,.8,.2,1) infinite;
+      }
+
+      @keyframes loaderPulse {
+        0% { transform: scaleX(0.9) translateY(0); }
+        50% { transform: scaleX(1.05) translateY(-6px); }
+        100% { transform: scaleX(0.9) translateY(0); }
+      }
     </style>
   </head>
   <body>
+    <!-- initial loader (very short, hides after page ready) -->
+    <div id="siteLoader" class="site-loader" aria-hidden="true">
+      <div class="loader-ring" aria-hidden="true"></div>
+    </div>
     <header>
       <nav>
         <div class="nav-left">
           <button class="theme-toggle" id="themeToggle" aria-label="Wechsel zu hellem Modus" type="button">
-            <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+            <span class="theme-toggle-track" aria-hidden="true">
+              <span class="theme-sun">☀️</span>
+              <span class="theme-moon">🌙</span>
+              <span class="theme-toggle-thumb" id="themeToggleThumb"></span>
+            </span>
             <span class="theme-toggle-text">Dark</span>
           </button>
           <div class="brand">
@@ -1040,7 +1140,7 @@
           <a href="#verwaltung">Abläufe</a>
           <a href="#transparenz">Transparenz</a>
           <a href="#kontakt">Kontakt</a>
-          <!-- Quiz removed per request -->
+          <!-- Quiz removed -->
         </div>
       </nav>
     </header>
@@ -1117,7 +1217,7 @@
           </div>
           <div class="service-item">
             <h3>Wie können Jugendliche mitmachen?</h3>
-            <p>!!!noch ändern!!!.</p>
+            <p>Jugendliche können eigene Vorschläge einbringen, beim Jugendrat mitreden oder sich bei der Stadtverwaltung informieren.</p>
           </div>
           <div class="service-item">
             <h3>Wie kann man Geld beanspruchen?</h3>
@@ -1198,27 +1298,6 @@
         </div>
       </section>
 
-      <section id="quiz" class="section reveal">
-        <div class="section-intro">
-          <div>
-            <h2>Quiz: Wie würdest du 10 Mio. € verteilen?</h2>
-            <p>Ziehe die Linien zwischen den Bereichen, um die Verteilung zu ändern. Jede Linie zeigt, wo eine Farbe aufhört und die nächste beginnt.</p>
-          </div>
-        </div>
-
-        <div class="quiz-area">
-          <div class="quiz-info">
-            <p>Welche Priorität hat für dich Schule, Freizeit, Umwelt oder Sicherheit? Du kannst die Linien verschieben und sofort sehen, wie viel Geld jede Kategorie bekommt.</p>
-            <div class="quiz-summary">
-              <span id="quizTotalPercent">100 % verteilt</span>
-              <span id="quizTotalAmount">10.000.000 € gesamt</span>
-            </div>
-          </div>
-          <div class="stacked-bar" id="stackedBar"></div>
-          <div class="quiz-legend" id="quizLegend"></div>
-        </div>
-      </section>
-
       <section id="kontakt" class="section reveal">
         <div class="section-intro">
           <div>
@@ -1269,7 +1348,7 @@
       </div>
     </div>
 
-    <!-- quiz removed -->
+    <!-- Quiz removed -->
 
     <script>
       const sections = document.querySelectorAll('.reveal');
@@ -1292,7 +1371,12 @@
       );
 
       document.addEventListener('DOMContentLoaded', () => {
-        document.body.classList.add('page-loaded');
+        const loader = document.getElementById('siteLoader');
+        // short, pleasant delay so the animation is visible but quick
+        setTimeout(() => {
+          document.body.classList.add('page-loaded');
+          if (loader) loader.classList.add('hidden');
+        }, 420);
       });
 
       sections.forEach((section, index) => {
@@ -1300,8 +1384,11 @@
         observer.observe(section);
       });
 
-      const quizBar = document.getElementById('stackedBar');
-      const quizLegend = document.getElementById('quizLegend');
+      const quizModal = document.getElementById('quizModal');
+      const openQuizButtons = document.querySelectorAll('#openQuiz, #openQuizHero');
+      const closeQuiz = document.getElementById('closeQuiz');
+      const pieChart = document.getElementById('pieChart');
+      const pieLegend = document.getElementById('pieLegend');
       const quizTotalPercent = document.getElementById('quizTotalPercent');
       const quizTotalAmount = document.getElementById('quizTotalAmount');
       const themeToggle = document.getElementById('themeToggle');
@@ -1319,9 +1406,9 @@
       ];
 
       const quizColors = ['#4ea2ff', '#5fb0ff', '#7ed957', '#f1c33f', '#f86f6f', '#bb6cf7', '#54c5c9'];
-      let activeDivider = null;
+      let activeHandle = null;
       let activePointerId = null;
-      let quizBarRect = null;
+      let chartRect = null;
 
       function formatMoney(amount) {
         return amount.toLocaleString('de-DE') + ' €';
@@ -1350,23 +1437,55 @@
         applyTheme(storedTheme === 'light' ? 'light' : 'dark');
       }
 
-      function updateQuiz() {
-        if (!quizBar || !quizLegend || !quizTotalPercent || !quizTotalAmount) return;
+      function polarToCartesian(cx, cy, r, angleDeg) {
+        const radians = ((angleDeg - 90) * Math.PI) / 180.0;
+        return {
+          x: cx + r * Math.cos(radians),
+          y: cy + r * Math.sin(radians)
+        };
+      }
+
+      function describeArc(cx, cy, r, startAngle, endAngle) {
+        const start = polarToCartesian(cx, cy, r, endAngle);
+        const end = polarToCartesian(cx, cy, r, startAngle);
+        const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
+        return [
+          `M ${cx} ${cy}`,
+          `L ${start.x} ${start.y}`,
+          `A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`,
+          'Z'
+        ].join(' ');
+      }
+
+      function updatePie() {
+        if (!pieChart || !pieLegend || !quizTotalPercent || !quizTotalAmount) return;
 
         const totalPercent = quizCategories.reduce((sum, category) => sum + category.value, 0);
         const totalAmount = Math.round((totalPercent / 100) * quizTotalAmountBase);
         quizTotalPercent.textContent = `${totalPercent}% verteilt`;
         quizTotalAmount.textContent = `${formatMoney(totalAmount)} gesamt`;
 
-        const segments = quizBar.querySelectorAll('.quiz-segment');
-        segments.forEach((segment, index) => {
-          const category = quizCategories[index];
-          segment.style.flex = `0 0 ${category.value}%`;
-          segment.textContent = `${category.name} ${category.value}%`;
-          segment.style.background = quizColors[index % quizColors.length];
+        const paths = pieChart.querySelectorAll('.pie-segment');
+        const handles = pieChart.querySelectorAll('.pie-handle');
+
+        let startAngle = 0;
+        quizCategories.forEach((category, index) => {
+          const endAngle = startAngle + (category.value / 100) * 360;
+          const path = paths[index];
+          if (path) {
+            path.setAttribute('d', describeArc(130, 130, 110, startAngle, endAngle));
+            path.setAttribute('fill', quizColors[index % quizColors.length]);
+          }
+          if (index < handles.length) {
+            const handle = handles[index];
+            const position = polarToCartesian(130, 130, 118, endAngle);
+            handle.setAttribute('cx', position.x);
+            handle.setAttribute('cy', position.y);
+          }
+          startAngle = endAngle;
         });
 
-        const legendItems = quizLegend.querySelectorAll('.quiz-legend-item');
+        const legendItems = pieLegend.querySelectorAll('.quiz-legend-item');
         legendItems.forEach((item, index) => {
           const category = quizCategories[index];
           item.querySelector('.quiz-legend-name').textContent = category.name;
@@ -1374,27 +1493,31 @@
         });
       }
 
-      function renderQuiz() {
-        if (!quizBar || !quizLegend) return;
+      function renderPie() {
+        if (!pieChart || !pieLegend) return;
 
-        quizBar.innerHTML = '';
-        quizLegend.innerHTML = '';
+        pieChart.innerHTML = '';
+        pieLegend.innerHTML = '';
 
+        let startAngle = 0;
         quizCategories.forEach((category, index) => {
-          const segment = document.createElement('div');
-          segment.className = 'quiz-segment';
-          segment.style.flex = `0 0 ${category.value}%`;
-          segment.style.background = quizColors[index % quizColors.length];
-          segment.textContent = `${category.name} ${category.value}%`;
-          quizBar.appendChild(segment);
+          const endAngle = startAngle + (category.value / 100) * 360;
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.classList.add('pie-segment');
+          path.setAttribute('d', describeArc(130, 130, 110, startAngle, endAngle));
+          path.setAttribute('fill', quizColors[index % quizColors.length]);
+          pieChart.appendChild(path);
 
           if (index < quizCategories.length - 1) {
-            const divider = document.createElement('div');
-            divider.className = 'quiz-divider';
-            divider.dataset.index = index;
-            divider.innerHTML = '<div class="quiz-divider-line"></div>';
-            divider.addEventListener('pointerdown', startDividerDrag);
-            quizBar.appendChild(divider);
+            const position = polarToCartesian(130, 130, 118, endAngle);
+            const handle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            handle.classList.add('pie-handle');
+            handle.setAttribute('r', 8);
+            handle.setAttribute('cx', position.x);
+            handle.setAttribute('cy', position.y);
+            handle.dataset.index = String(index);
+            handle.addEventListener('pointerdown', startHandleDrag);
+            pieChart.appendChild(handle);
           }
 
           const item = document.createElement('div');
@@ -1405,80 +1528,85 @@
               <div class="quiz-legend-name">${category.name}</div>
               <div class="quiz-legend-value">${category.value}%</div>
             </div>`;
-          quizLegend.appendChild(item);
+          pieLegend.appendChild(item);
+
+          startAngle = endAngle;
         });
 
-        updateQuiz();
+        updatePie();
       }
 
-      function updateQuiz() {
-        if (!quizBar || !quizLegend || !quizTotalPercent || !quizTotalAmount) return;
-
-        const totalPercent = quizCategories.reduce((sum, category) => sum + category.value, 0);
-        const totalAmount = Math.round((totalPercent / 100) * quizTotalAmountBase);
-        quizTotalPercent.textContent = `${totalPercent}% verteilt`;
-        quizTotalAmount.textContent = `${formatMoney(totalAmount)} gesamt`;
-
-        const segments = quizBar.querySelectorAll('.quiz-segment');
-        segments.forEach((segment, index) => {
-          const category = quizCategories[index];
-          segment.style.flex = `0 0 ${category.value}%`;
-          segment.textContent = `${category.name} ${category.value}%`;
-          segment.style.background = quizColors[index % quizColors.length];
-        });
-
-        const dividers = quizBar.querySelectorAll('.quiz-divider');
-        dividers.forEach((divider, index) => {
-          const leftPercent = quizCategories.slice(0, index + 1).reduce((sum, cat) => sum + cat.value, 0);
-          divider.style.left = `${leftPercent}%`;
-        });
-
-        const legendItems = quizLegend.querySelectorAll('.quiz-legend-item');
-        legendItems.forEach((item, index) => {
-          const category = quizCategories[index];
-          item.querySelector('.quiz-legend-name').textContent = category.name;
-          item.querySelector('.quiz-legend-value').textContent = `${category.value}%`;
-        });
-      }
-
-      function startDividerDrag(event) {
+      function startHandleDrag(event) {
         event.preventDefault();
-        activeDivider = event.currentTarget;
+        activeHandle = event.currentTarget;
         activePointerId = event.pointerId;
-        quizBarRect = quizBar.getBoundingClientRect();
-        activeDivider.setPointerCapture(activePointerId);
+        chartRect = pieChart.getBoundingClientRect();
+        activeHandle.setPointerCapture(activePointerId);
       }
 
-      function onDragMove(event) {
-        if (!activeDivider || event.pointerId !== activePointerId) return;
-        const index = Number(activeDivider.dataset.index);
-        const pointerX = Math.max(0, Math.min(quizBarRect.width, event.clientX - quizBarRect.left));
-        const totalWidthPercent = quizCategories[index].value + quizCategories[index + 1].value;
-        const leftPriorPercent = quizCategories.slice(0, index).reduce((sum, category) => sum + category.value, 0);
-        const relativePercent = ((pointerX / quizBarRect.width) * 100 - leftPriorPercent) / totalWidthPercent;
+      function onPieDrag(event) {
+        if (!activeHandle || event.pointerId !== activePointerId) return;
+        const index = Number(activeHandle.dataset.index);
+        const x = event.clientX - chartRect.left;
+        const y = event.clientY - chartRect.top;
+        const centerX = chartRect.width / 2;
+        const centerY = chartRect.height / 2;
+        const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI);
+        let normalized = angle < 0 ? angle + 360 : angle;
+
+        const leftPercent = quizCategories.slice(0, index).reduce((sum, cat) => sum + cat.value, 0);
+        const segmentTotal = quizCategories[index].value + quizCategories[index + 1].value;
+        const pairStart = leftPercent * 3.6;
+        const pairEnd = pairStart + segmentTotal * 3.6;
+        if (pairEnd > 360 && normalized < pairStart) normalized += 360;
+        const clampedAngle = Math.max(pairStart, Math.min(pairEnd, normalized));
+        const targetPercent = (clampedAngle - pairStart) / 3.6;
+
         const minValue = 5;
-        const newLeftValue = Math.round(Math.max(minValue, Math.min(totalWidthPercent - minValue, relativePercent * totalWidthPercent)));
-
-        quizCategories[index].value = newLeftValue;
-        quizCategories[index + 1].value = totalWidthPercent - newLeftValue;
-        updateQuiz();
+        const leftValue = Math.round(Math.max(minValue, Math.min(segmentTotal - minValue, targetPercent)));
+        quizCategories[index].value = leftValue;
+        quizCategories[index + 1].value = segmentTotal - leftValue;
+        updatePie();
       }
 
-      function stopDividerDrag(event) {
-        if (!activeDivider || event.pointerId !== activePointerId) return;
-        activeDivider.releasePointerCapture(activePointerId);
-        activeDivider = null;
+      function stopPieDrag(event) {
+        if (!activeHandle || event.pointerId !== activePointerId) return;
+        activeHandle.releasePointerCapture(activePointerId);
+        activeHandle = null;
         activePointerId = null;
-        quizBarRect = null;
+        chartRect = null;
       }
 
-      document.addEventListener('pointermove', onDragMove);
-      document.addEventListener('pointerup', stopDividerDrag);
-      document.addEventListener('pointercancel', stopDividerDrag);
+      openQuizButtons.forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.preventDefault();
+          quizModal.classList.add('active');
+          quizModal.hidden = false;
+          renderPie();
+        });
+      });
+
+      if (closeQuiz) {
+        closeQuiz.addEventListener('click', () => {
+          quizModal.classList.remove('active');
+          quizModal.hidden = true;
+        });
+      }
+
+      quizModal.addEventListener('click', (event) => {
+        if (event.target === quizModal) {
+          quizModal.classList.remove('active');
+          quizModal.hidden = true;
+        }
+      });
+
+      document.addEventListener('pointermove', onPieDrag);
+      document.addEventListener('pointerup', stopPieDrag);
+      document.addEventListener('pointercancel', stopPieDrag);
 
       if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
       try { if (typeof loadTheme === 'function') loadTheme(); } catch (e) {}
-      renderQuiz();
+      renderPie();
 
       // Version / changelog fetch + secret modal
       const siteVersionBtn = document.getElementById('siteVersion');
@@ -1486,6 +1614,16 @@
       const versionModal = document.getElementById('versionModal');
       const closeVersionModal = document.getElementById('closeVersionModal');
       const versionChangeList = document.getElementById('versionChangeList');
+
+      // Inline fallback so the modal works even before a fetch from GitHub Pages succeeds
+      const INLINE_VERSION = {
+        version: "1.0.1",
+        changes: [
+          "2026-06-30 — Neuer Eintrag: Benutzer meldet, dass das Modal nicht angezeigt wird und bittet darum, neue Prompts automatisch in das Modal einzufügen.",
+          "Initial release: Basisinhalte und Layout",
+          "Einfaches Budget-Feature ergänzt (Version 1.0.0)"
+        ]
+      };
 
       async function loadVersionInfo() {
         const paths = ['./version.json', '/version.json', 'version.json'];
@@ -1500,13 +1638,7 @@
             // try next
           }
         }
-
-        if (!data) {
-          siteVersionNumber.textContent = 'offline';
-          versionChangeList.innerHTML = '<li>Versiondaten nicht verfügbar</li>';
-          siteVersionBtn.style.opacity = '0.7';
-          return;
-        }
+        if (!data) data = INLINE_VERSION;
 
         siteVersionNumber.textContent = data.version || '-';
         versionChangeList.innerHTML = '';
@@ -1545,6 +1677,10 @@
           if (versionModal && versionModal.classList.contains('active')) {
             versionModal.classList.remove('active');
             versionModal.hidden = true;
+          }
+          if (quizModal && quizModal.classList.contains('active')) {
+            quizModal.classList.remove('active');
+            quizModal.hidden = true;
           }
         }
       });
