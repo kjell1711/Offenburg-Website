@@ -100,28 +100,55 @@
         max-width: 1200px;
         margin: 0 auto;
         padding: 4.5rem 1.5rem 3rem;
+        position: relative;
+      }
+
+      .hero::before,
+      .hero::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(70px);
+        pointer-events: none;
+      }
+
+      .hero::before {
+        width: 420px;
+        height: 420px;
+        right: -18%;
+        top: 8%;
+        background: rgba(78, 162, 255, 0.08);
+      }
+
+      .hero::after {
+        width: 260px;
+        height: 260px;
+        left: 6%;
+        top: 24%;
+        background: rgba(255, 255, 255, 0.06);
       }
 
       .hero-grid {
         display: grid;
         gap: 2rem;
-        grid-template-columns: 1.2fr 0.8fr;
+        grid-template-columns: 1.2fr 0.85fr;
         align-items: center;
       }
 
       .hero-copy {
-        animation: fadeUp 0.7s ease both;
+        position: relative;
+        z-index: 1;
+        animation: fadeUp 0.8s ease both;
       }
 
       .hero h1 {
         margin: 0;
-        font-size: clamp(2.75rem, 5vw, 4.5rem);
+        font-size: clamp(2.9rem, 5vw, 5rem);
         line-height: 1.02;
-        color: var(--text);
       }
 
       .hero p {
-        max-width: 720px;
+        max-width: 700px;
         margin: 1.75rem 0 0;
         color: var(--text-muted);
         font-size: 1.05rem;
@@ -134,58 +161,129 @@
         margin-top: 2rem;
       }
 
-      .hero-actions a {
+      .button {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 160px;
-        padding: 0.95rem 1.5rem;
-        border-radius: 0.85rem;
+        min-width: 165px;
+        padding: 0.95rem 1.6rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
         font-weight: 600;
         text-decoration: none;
-        border: 1px solid transparent;
-        transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+        transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease, border-color 220ms ease;
       }
 
-      .hero-actions a.primary {
+      .button.primary {
         background: linear-gradient(135deg, var(--primary), var(--primary-strong));
         color: #07101a;
-        box-shadow: 0 18px 40px rgba(78, 162, 255, 0.2);
+        box-shadow: 0 18px 40px rgba(78, 162, 255, 0.22);
       }
 
-      .hero-actions a.secondary {
+      .button.secondary {
         background: rgba(255, 255, 255, 0.08);
         color: var(--text);
-        border-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.12);
       }
 
-      .hero-actions a:hover {
+      .button:hover {
         transform: translateY(-2px);
       }
 
       .hero-panel {
         display: grid;
-        gap: 1.25rem;
+        gap: 1rem;
+        position: relative;
       }
 
-      .hero-panel .stat {
-        padding: 1.4rem 1.5rem;
-        border-radius: 1.25rem;
-        background: #112136;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+      .dashboard-card {
+        position: relative;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 32px;
+        padding: 2rem;
         box-shadow: var(--shadow);
-        animation: fadeUp 0.7s ease both;
       }
 
-      .hero-panel .stat strong {
+      .dashboard-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(78, 162, 255, 0.08), transparent 40%);
+        pointer-events: none;
+      }
+
+      .dashboard-card h2 {
+        margin: 0 0 1rem;
+        font-size: 1.35rem;
+        color: var(--text);
+      }
+
+      .dashboard-card p {
+        margin: 0 0 1.8rem;
+        color: var(--text-muted);
+        line-height: 1.75;
+      }
+
+      .dash-grid {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1.5rem;
+        padding: 1rem 1.2rem;
+        transition: transform 220ms ease, border-color 220ms ease;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(78, 162, 255, 0.2);
+      }
+
+      .stat-card strong {
         display: block;
         font-size: 2rem;
         color: var(--primary);
       }
 
-      .hero-panel .stat span {
+      .stat-card span {
         color: var(--text-muted);
       }
+
+      .progress-list {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .progress-item {
+        display: grid;
+        gap: 0.5rem;
+      }
+
+      .progress-item label {
+        font-size: 0.95rem;
+        color: var(--text);
+      }
+
+      .progress-track {
+        height: 0.85rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        width: 0;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+        transition: width 1.5s ease;
+      }
+
 
       section {
         max-width: 1200px;
@@ -381,33 +479,55 @@
       <section class="hero visible" id="home">
         <div class="hero-grid">
           <div class="hero-copy">
-            <p style="margin:0;font-weight:600;color:var(--primary);letter-spacing:0.12em;text-transform:uppercase;">Offenburg Haushalt</p>
-            <h1>Ein Einstieg in den kommunalen Haushalt und seine Wirkungen.</h1>
-            <p>Hier geht es um die grundlegenden Aufgaben der Haushaltsplanung in einer Kommune wie Offenburg. Der Fokus liegt auf Einnahmen, Ausgaben und den Prozessen, die für den Haushalt verantwortlich sind.</p>
+            <span class="badge">Haushaltsinfo</span>
+            <h1>Offenburgs Haushalt: Struktur, Zahlen und Wirkungen.</h1>
+            <p>Diese Seite erklärt die zentralen Mechanismen kommunaler Finanzplanung und zeigt, wie eine Stadt wie Offenburg ihre Mittel vorbereitet, verteilt und prüft.</p>
             <div class="hero-actions">
-              <a class="primary" href="#haushalt">Haushaltsübersicht</a>
-              <a class="secondary" href="#transparenz">Transparenz</a>
+              <a class="button primary" href="#haushalt">Haushaltsstruktur</a>
+              <a class="button secondary" href="#transparenz">Mehr Transparenz</a>
             </div>
           </div>
 
           <div class="hero-panel">
-            <div class="stat">
-              <strong>4</strong>
-              <span>Haushaltsphasen</span>
-            </div>
-            <div class="stat">
-              <strong>7</strong>
-              <span>Bereiche des Haushalts</span>
-            </div>
-            <div class="stat">
-              <strong>1</strong>
-              <span>Gemeinsamer Rahmen für Entscheidungen</span>
+            <div class="dashboard-card">
+              <h2>Haushalt auf einen Blick</h2>
+              <p>Offenburgs kommunaler Haushalt bündelt Einnahmen und Ausgaben in einem jährlichen Plan. Hier stehen zentrale Zahlen und Zielrichtungen im Fokus.</p>
+
+              <div class="dash-grid">
+                <div class="stat-card">
+                  <strong data-target="62">0</strong>
+                  <span>Einnahmen in % des Gesamtbudgets</span>
+                </div>
+                <div class="stat-card">
+                  <strong data-target="28">0</strong>
+                  <span>Ausgaben für Infrastruktur</span>
+                </div>
+                <div class="stat-card">
+                  <strong data-target="15">0</strong>
+                  <span>Investitionen in Klimaschutz</span>
+                </div>
+              </div>
+
+              <div class="progress-list">
+                <div class="progress-item">
+                  <label>Planung</label>
+                  <div class="progress-track"><div class="progress-bar" data-progress="82"></div></div>
+                </div>
+                <div class="progress-item">
+                  <label>Transparenz</label>
+                  <div class="progress-track"><div class="progress-bar" data-progress="74"></div></div>
+                </div>
+                <div class="progress-item">
+                  <label>Investitionen</label>
+                  <div class="progress-track"><div class="progress-bar" data-progress="58"></div></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="haushalt" class="reveal">
+      <section id="haushalt" class="section reveal">
         <div class="section-intro">
           <div>
             <h2>Haushaltsstruktur</h2>
@@ -542,21 +662,52 @@
     </footer>
 
     <script>
-      const sections = document.querySelectorAll('section.reveal');
+      const sections = document.querySelectorAll('.section.reveal');
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               entry.target.classList.add('visible');
+              const bars = entry.target.querySelectorAll('.progress-bar');
+              bars.forEach((bar) => {
+                const value = bar.dataset.progress;
+                bar.style.width = value + '%';
+              });
             } else {
               entry.target.classList.remove('visible');
             }
           });
         },
-        { threshold: 0.2 }
+        { threshold: 0.22 }
       );
 
       sections.forEach((section) => observer.observe(section));
+
+      const counters = document.querySelectorAll('[data-target]');
+      const countObserver = new IntersectionObserver(
+        (entries, observerRef) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const element = entry.target;
+            const target = Number(element.dataset-target);
+            const step = Math.max(1, Math.round(target / 80));
+            let current = 0;
+            const interval = setInterval(() => {
+              current += step;
+              if (current >= target) {
+                element.textContent = target;
+                clearInterval(interval);
+                return;
+              }
+              element.textContent = current;
+            }, 16);
+            observerRef.unobserve(element);
+          });
+        },
+        { threshold: 0.3 }
+      );
+
+      counters.forEach((counter) => countObserver.observe(counter));
     </script>
   </body>
 </html>
