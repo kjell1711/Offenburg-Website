@@ -1134,6 +1134,29 @@
       <p><a href="#home">Zum Anfang</a></p>
     </footer>
 
+    <!-- very small version badge (bottom of page) -->
+    <div style="text-align:center; margin-top:8px;">
+      <button id="siteVersion" title="Version anzeigen" style="border:0;background:transparent;color:var(--text-muted);font-size:10px;opacity:0.8;cursor:pointer;padding:6px 8px;">
+        v<span id="siteVersionNumber">—</span>
+      </button>
+    </div>
+
+    <!-- secret version modal (shows last 3 changes) -->
+    <div class="modal-backdrop" id="versionModal" role="dialog" aria-modal="true" aria-labelledby="versionModalTitle" hidden>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="versionModalTitle">Änderungen</h2>
+          <div class="modal-header-actions">
+            <button class="modal-close" id="closeVersionModal" aria-label="Schließen">✕</button>
+          </div>
+        </div>
+        <div class="modal-body" id="versionModalBody">
+          <p class="modal-note">Letzte Änderungen (aktualisiert nach jedem Commit)</p>
+          <ul id="versionChangeList" style="margin:0; padding-left:1.1rem;"></ul>
+        </div>
+      </div>
+    </div>
+
     <div class="modal-backdrop" id="quizModal" role="dialog" aria-modal="true" aria-labelledby="quizModalTitle" hidden>
       <div class="modal-content">
         <div class="modal-header">
@@ -1369,6 +1392,65 @@
       themeToggle.addEventListener('click', toggleTheme);
       loadTheme();
       renderBudgetList();
+
+      // Version / changelog fetch + secret modal
+      const siteVersionBtn = document.getElementById('siteVersion');
+      const siteVersionNumber = document.getElementById('siteVersionNumber');
+      const versionModal = document.getElementById('versionModal');
+      const closeVersionModal = document.getElementById('closeVersionModal');
+      const versionChangeList = document.getElementById('versionChangeList');
+
+      async function loadVersionInfo() {
+        try {
+          const res = await fetch('./version.json', { cache: 'no-store' });
+          if (!res.ok) throw new Error('no version');
+          const data = await res.json();
+          siteVersionNumber.textContent = data.version || '-';
+          versionChangeList.innerHTML = '';
+          (data.changes || []).slice(0, 3).forEach((c) => {
+            const li = document.createElement('li');
+            li.textContent = c;
+            versionChangeList.appendChild(li);
+          });
+        } catch (err) {
+          siteVersionNumber.textContent = '-';
+        }
+      }
+
+      if (siteVersionBtn && versionModal) {
+        siteVersionBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          versionModal.classList.add('active');
+          versionModal.hidden = false;
+        });
+
+        if (closeVersionModal) {
+          closeVersionModal.addEventListener('click', () => {
+            versionModal.classList.remove('active');
+            versionModal.hidden = true;
+          });
+        }
+
+        versionModal.addEventListener('click', (e) => {
+          if (e.target === versionModal) {
+            versionModal.classList.remove('active');
+            versionModal.hidden = true;
+          }
+        });
+      }
+
+      // keyboard close
+      document.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape') {
+          if (versionModal && versionModal.classList.contains('active')) {
+            versionModal.classList.remove('active');
+            versionModal.hidden = true;
+          }
+        }
+      });
+
+      // initial load
+      loadVersionInfo();
     </script>
   </body>
 </html>
