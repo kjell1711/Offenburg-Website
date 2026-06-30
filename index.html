@@ -5,120 +5,349 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stadt Offenburg</title>
     <style>
+      :root {
+        --bg: #091b2b;
+        --surface: rgba(255, 255, 255, 0.08);
+        --surface-strong: rgba(255, 255, 255, 0.16);
+        --text: #f7f9fb;
+        --accent: #23a6f0;
+        --accent-soft: #4ab1ff;
+        --muted: #c3d6e8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
       body {
         margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f7f7f7;
+        min-height: 100%;
+        font-family: 'Inter', system-ui, sans-serif;
+        color: var(--text);
+        background: radial-gradient(circle at top left, rgba(35, 166, 240, 0.18), transparent 35%),
+          linear-gradient(180deg, #07131f 0%, #0f2336 40%, #071421 100%);
       }
+
+      body {
+        overflow-x: hidden;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(14px);
+        background: rgba(9, 27, 43, 0.83);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
       nav {
         display: flex;
-        justify-content: center;
-        background: #004a94;
-        padding: 10px 0;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem 1.5rem;
       }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .brand span {
+        display: inline-block;
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      }
+
       nav a {
-        color: white;
+        color: var(--text);
         text-decoration: none;
-        padding: 10px 20px;
-        margin: 0 10px;
-        border-radius: 6px;
+        font-size: 0.95rem;
+        padding: 0.85rem 1.2rem;
+        border-radius: 999px;
+        transition: background 220ms ease, transform 220ms ease;
       }
-      nav a:hover {
-        background: rgba(255, 255, 255, 0.1);
+
+      nav a:hover,
+      nav a:focus-visible {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-1px);
       }
-      main {
+
+      .hero {
+        display: grid;
+        place-items: center;
+        min-height: calc(100vh - 80px);
+        padding: 2rem 1.5rem;
         text-align: center;
-        padding: 50px 20px;
       }
-      h1 {
+
+      .hero-inner {
+        max-width: 960px;
+      }
+
+      .hero h1 {
         margin: 0;
-        font-size: 2rem;
-        color: #222;
+        font-size: clamp(2.75rem, 5vw, 5.2rem);
+        line-height: 1.03;
+        letter-spacing: -0.05em;
       }
-      .posts-container {
-        display: flex;
-        gap: 20px;
-        justify-content: center;
+
+      .hero p {
+        margin: 1.5rem auto 0;
+        max-width: 720px;
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.8;
+      }
+
+      .hero .cta-group {
+        display: inline-flex;
         flex-wrap: wrap;
-        margin-top: 30px;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2.5rem;
       }
-      .post {
-        background: white;
-        border-radius: 8px;
-        padding: 20px;
-        width: 300px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        text-align: left;
-      }
-      .post-title {
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: #004a94;
-        margin-bottom: 10px;
-      }
-      .post-content {
-        color: #555;
-        line-height: 1.5;
-        margin-bottom: 15px;
-      }
-      .post-content textarea {
-        width: 100%;
-        min-height: 80px;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-family: Arial, sans-serif;
-        display: none;
-      }
-      .post-content textarea.editing {
-        display: block;
-      }
-      .post-content p.editing {
-        display: none;
-      }
-      .post-buttons {
-        display: flex;
-        gap: 10px;
-      }
-      .post-buttons button {
-        flex: 1;
-        padding: 8px 12px;
-        border: none;
-        border-radius: 4px;
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 170px;
+        padding: 0.95rem 1.6rem;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        font-weight: 600;
         cursor: pointer;
-        font-weight: bold;
+        transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
       }
-      .btn-edit {
-        background: #004a94;
-        color: white;
+
+      .button-primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+        color: #08131f;
+        box-shadow: 0 18px 50px rgba(35, 166, 240, 0.16);
       }
-      .btn-edit:hover {
-        background: #003366;
+
+      .button-secondary {
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text);
       }
-      .btn-save {
-        background: #28a745;
-        color: white;
+
+      .button:hover {
+        transform: translateY(-2px);
       }
-      .btn-save:hover {
-        background: #218838;
+
+      .section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 5rem 1.5rem;
       }
-      .btn-cancel {
-        background: #dc3545;
-        color: white;
+
+      .grid {
+        display: grid;
+        gap: 1.75rem;
       }
-      .btn-cancel:hover {
-        background: #c82333;
+
+      .feature-cards {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        padding: 2rem;
+        min-height: 260px;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        transition: transform 200ms ease, border-color 200ms ease;
+      }
+
+      .card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(35, 166, 240, 0.28);
+      }
+
+      .card h3 {
+        margin: 0;
+        font-size: 1.25rem;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.8;
+        flex: 1;
+      }
+
+      .info-panel {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: 1.45fr 1fr;
+        align-items: center;
+      }
+
+      .info-panel h2 {
+        margin-top: 0;
+        font-size: clamp(2rem, 3vw, 3rem);
+      }
+
+      .info-panel p {
+        margin: 1.25rem 0 0;
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.8;
+      }
+
+      .highlight-box {
+        background: linear-gradient(180deg, rgba(35, 166, 240, 0.14), rgba(255, 255, 255, 0.04));
+        border-radius: 24px;
+        padding: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .highlight-box p {
+        margin: 0;
+        color: var(--text);
+      }
+
+      footer {
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.65);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .footer-links {
+        display: inline-flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 1rem auto 0;
+      }
+
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+
+      .footer-links a:hover {
+        color: var(--accent-soft);
+      }
+
+      @media (max-width: 860px) {
+        .info-panel {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 620px) {
+        nav {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-top: 3rem;
+        }
+
+        .hero h1 {
+          font-size: 2.8rem;
+        }
       }
     </style>
   </head>
   <body>
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#info">Info</a>
-      <a href="#kontakt">Kontakt</a>
-    </nav>
-    <main>
-      <h1>Stadt Offenburg</h1>
-    </main>
+    <header>
+      <nav>
+        <div class="brand">
+          <span></span>
+          Stadt Offenburg
+        </div>
+        <div>
+          <a href="#home">Start</a>
+          <a href="#leistungen">Leistungen</a>
+          <a href="#kontakt">Kontakt</a>
+        </div>
+      </nav>
+    </header>
+
+    <section class="hero" id="home">
+      <div class="hero-inner">
+        <h1>Offenburg digital erleben: modernes Design für deine Stadt.</h1>
+        <p>Eine ansprechende Website für Offenburg mit klaren Informationen, dynamischen Sektionen und einer Nutzeroberfläche, die Vertrauen schafft und neugierig macht.</p>
+        <div class="cta-group">
+          <a class="button button-primary" href="#leistungen">Mehr erfahren</a>
+          <a class="button button-secondary" href="#kontakt">Kontakt aufnehmen</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="leistungen">
+      <div class="grid feature-cards">
+        <article class="card">
+          <h3>Starke Präsenz</h3>
+          <p>Eine visuell überzeugende Startseite mit Fokus auf Identität, Klarheit und emotionaler Ansprache, die Besucher sofort abholt.</p>
+        </article>
+        <article class="card">
+          <h3>Struktur und Übersicht</h3>
+          <p>Intuitive Navigation und klare Sektionen sorgen dafür, dass Inhalte schnell gefunden werden und die Seite professionell wirkt.</p>
+        </article>
+        <article class="card">
+          <h3>Responsive Darstellung</h3>
+          <p>Das Design passt sich flüssig an jedes Gerät an. So bleibt die Seite auf Desktop, Tablet und Smartphone gleichermaßen attraktiv.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="info-panel">
+        <div>
+          <h2>Ein moderner Auftritt für die Stadt Offenburg</h2>
+          <p>Diese Seite wurde mit einem anspruchsvolleren Layout, weichen Gradienten, moderner Typografie und einer spannenden Struktur ausgestattet. Ziel ist es, die Wahrnehmung von Offenburg als moderne, lebendige Stadt zu stärken.</p>
+        </div>
+        <div class="highlight-box">
+          <p>Das Design kombiniert technische Raffinesse mit klarem Content. So entsteht ein Erlebnis, das sowohl informativ als auch visuell einladend ist.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="kontakt">
+      <div class="grid" style="grid-template-columns: minmax(0, 1fr); gap: 1.5rem;">
+        <div class="card" style="background: rgba(35, 166, 240, 0.08); border-color: rgba(35, 166, 240, 0.18);">
+          <h3>Kontakt</h3>
+          <p>Interessiert an einem besseren Webauftritt für Offenburg? Sende eine Nachricht und erfahre, wie wir die Website weiter ausbauen können.</p>
+        </div>
+        <div class="card">
+          <h3>Weiterer Ausbau</h3>
+          <p>Zusätzliche Inhalte wie Veranstaltungskalender, Rathausinformationen oder interaktive Bürgerdienste lassen sich leicht ergänzen.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>© 2026 Stadt Offenburg — Digitaler Auftritt</div>
+      <div class="footer-links">
+        <a href="#home">Top</a>
+        <a href="#leistungen">Leistungen</a>
+        <a href="#kontakt">Kontakt</a>
+      </div>
+    </footer>
   </body>
 </html>
+
+
+
