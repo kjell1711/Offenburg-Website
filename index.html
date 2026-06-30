@@ -1,50 +1,1377 @@
 <!DOCTYPE html>
 <html lang="de">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stadt Offenburg</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kommunaler Haushalt</title>
     <style>
+      :root {
+        --font-main: 'Inter', system-ui, sans-serif;
+        --font-alt: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        --bg: #07101a;
+        --surface: #101c2c;
+        --surface-soft: #17263b;
+        --surface-light: #1e3351;
+        --modal: rgba(12, 20, 31, 0.98);
+        --accent-bg: rgba(255, 255, 255, 0.08);
+        --text: #edf2f7;
+        --text-muted: #9fb5c9;
+        --primary: #4ea2ff;
+        --primary-strong: #5fb0ff;
+        --border: rgba(255, 255, 255, 0.08);
+        --shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f7f7f7;
+        font-family: var(--font-main);
+        background: radial-gradient(circle at top left, rgba(78, 162, 255, 0.12), transparent 18%),
+          linear-gradient(180deg, #07101a 0%, #0f202f 48%, #07101a 100%);
+        color: var(--text);
+        line-height: 1.6;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 420ms ease, transform 420ms ease, background 240ms ease, color 240ms ease, font-family 240ms ease;
       }
+
+      body.page-loaded {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      body[data-theme='light'] {
+        --font-main: var(--font-alt);
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --surface-soft: #f2f5f8;
+        --surface-light: #e8eff7;
+        --modal: rgba(255, 255, 255, 0.94);
+        --accent-bg: rgba(16, 42, 67, 0.06);
+        --text: #102a43;
+        --text-muted: #52606d;
+        --primary: #3468f5;
+        --primary-strong: #547dff;
+        --border: rgba(16, 42, 67, 0.12);
+        --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+        background: radial-gradient(circle at top left, rgba(52, 104, 245, 0.1), transparent 18%),
+          linear-gradient(180deg, #ffffff 0%, #edf2f7 48%, #f8fafc 100%);
+      }
+
+      body[data-theme='light'] header {
+        background: rgba(255, 255, 255, 0.92);
+        border-bottom-color: var(--border);
+      }
+
+      body[data-theme='light'] .navigation a:hover,
+      body[data-theme='light'] .navigation a:focus-visible {
+        background: rgba(52, 104, 245, 0.14);
+        color: var(--text);
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(8, 17, 29, 0.96);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: saturate(180%) blur(10px);
+      }
+
       nav {
         display: flex;
-        justify-content: center;
-        background: #004a94;
-        padding: 10px 0;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem 1.5rem;
       }
-      nav a {
-        color: white;
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .brand-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 0.35rem;
+        background: linear-gradient(135deg, var(--primary), #2d7ef7);
+      }
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .theme-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 0.55rem 0.9rem;
+        background: var(--accent-bg);
+        color: var(--text);
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 220ms ease, background 220ms ease, border-color 220ms ease, color 220ms ease;
+      }
+
+      .theme-toggle:hover,
+      .theme-toggle:focus-visible {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      .theme-toggle-track {
+        width: 42px;
+        height: 22px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.14);
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .theme-toggle-thumb {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--text);
+        transition: left 260ms ease, background 260ms ease;
+      }
+
+      .theme-toggle.active .theme-toggle-thumb {
+        left: calc(100% - 20px);
+        background: var(--primary);
+      }
+
+      .theme-toggle-text {
+        font-size: 0.95rem;
+        white-space: nowrap;
+      }
+
+      .nav-left,
+      .navigation {
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 320ms ease, transform 320ms ease;
+      }
+
+      body.page-loaded .nav-left,
+      body.page-loaded .navigation {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .navigation {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .navigation a {
+        color: var(--text);
         text-decoration: none;
-        padding: 10px 20px;
-        margin: 0 10px;
-        border-radius: 6px;
+        font-weight: 500;
+        padding: 0.8rem 1rem;
+        border-radius: 0.85rem;
+        transition: background 220ms ease, transform 220ms ease, color 220ms ease;
       }
-      nav a:hover {
-        background: rgba(255, 255, 255, 0.1);
+
+      .navigation a:hover,
+      .navigation a:focus-visible {
+        background: rgba(78, 162, 255, 0.18);
+        transform: translateY(-1px);
+        color: white;
       }
+
       main {
-        text-align: center;
-        padding: 50px 20px;
+        position: relative;
       }
-      h1 {
+
+      .hero {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 4.5rem 1.5rem 3rem;
+        position: relative;
+      }
+
+      .hero::before,
+      .hero::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(70px);
+        pointer-events: none;
+      }
+
+      .hero::before {
+        width: 420px;
+        height: 420px;
+        right: -18%;
+        top: 8%;
+        background: rgba(78, 162, 255, 0.08);
+      }
+
+      .hero::after {
+        width: 260px;
+        height: 260px;
+        left: 6%;
+        top: 24%;
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      .hero-grid {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: 1fr;
+      }
+
+      .hero-copy {
+        position: relative;
+        z-index: 1;
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      body.page-loaded .hero-copy {
+        animation: heroFade 0.9s ease 0.2s forwards;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2rem;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      body.page-loaded .hero-actions {
+        animation: heroFade 0.7s ease 0.55s forwards;
+      }
+
+      .hero h1 {
         margin: 0;
+        font-size: clamp(2.9rem, 5vw, 5rem);
+        line-height: 1.02;
+      }
+
+      .hero p {
+        max-width: 700px;
+        margin: 1.75rem 0 0;
+        color: var(--text-muted);
+        font-size: 1.05rem;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 165px;
+        padding: 0.95rem 1.6rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease, border-color 220ms ease;
+      }
+
+      .button.primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+        color: #07101a;
+        box-shadow: 0 18px 40px rgba(78, 162, 255, 0.22);
+      }
+
+      .button.secondary {
+        background: var(--accent-bg);
+        color: var(--text);
+        border-color: var(--border);
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+      }
+
+      details {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1rem;
+        padding: 1rem;
+      }
+
+      summary {
+        cursor: pointer;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      details p {
+        margin: 0.75rem 0 0;
+        color: var(--text-muted);
+        line-height: 1.6;
+      }
+
+      .info-card details {
+        background: transparent;
+        border: none;
+        padding: 0;
+      }
+
+      .info-card summary {
+        list-style: none;
+      }
+
+      .info-card summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .info-card summary::before {
+        content: '▸ ';
+        color: var(--primary);
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(4, 10, 20, 0.78);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        z-index: 50;
+        opacity: 0;
+        transition: opacity 220ms ease;
+      }
+
+      .modal-backdrop.active {
+        display: flex;
+        opacity: 1;
+      }
+
+      .modal-content {
+        width: min(920px, 100%);
+        max-height: 90vh;
+        overflow: auto;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 1.5rem;
+        box-shadow: var(--shadow);
+        position: relative;
+        padding: 1.75rem;
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+        transition: transform 260ms ease, opacity 260ms ease;
+      }
+
+      .modal-backdrop.active .modal-content {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      .modal-content {
+        width: min(920px, 100%);
+        max-height: 90vh;
+        overflow: auto;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 1.5rem;
+        box-shadow: var(--shadow);
+        position: relative;
+        padding: 1.75rem;
+      }
+
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .modal-header-actions {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      .modal-body {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 1rem;
+        max-height: calc(90vh - 150px);
+        overflow: auto;
+        padding-right: 0.25rem;
+      }
+
+      .modal-header h2 {
+        margin: 0;
+        font-size: 1.6rem;
+      }
+
+      .modal-close {
+        background: transparent;
+        border: none;
+        color: var(--text);
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.35rem;
+      }
+
+      .budget-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 1.5rem;
+      }
+
+      .budget-info {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .budget-list {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .budget-item {
+        background: var(--surface-soft);
+        border: 1px solid var(--border);
+        border-radius: 1.35rem;
+        padding: 1rem;
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .budget-item-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .budget-item-controls {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .control-button {
+        width: 48px;
+        min-width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--accent-bg);
+        color: var(--text);
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 220ms ease, transform 220ms ease, border-color 220ms ease;
+      }
+
+      .control-button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.16);
+      }
+
+      .control-button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .budget-progress {
+        width: 100%;
+        height: 0.9rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+
+      .budget-progress span {
+        display: block;
+        width: 0;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+        transition: width 260ms ease;
+      }
+
+      .modal-note {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      .chart-board {
+        width: 100%;
+        min-height: 360px;
+        display: grid;
+        gap: 1rem;
+        padding: 1.2rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 1.5rem;
+        overflow: auto;
+      }
+
+      .quiz-info p,
+      .modal-note {
+        margin: 0;
+        color: var(--text-muted);
+      }
+
+      .budget-summary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 1.2rem;
+        padding: 1rem;
+      }
+
+      .budget-summary strong {
+        display: block;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .chart-board {
+        width: 100%;
+        min-height: 360px;
+        display: grid;
+        gap: 1rem;
+        padding: 1.2rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1.5rem;
+        overflow: auto;
+      }
+
+      .bar-list {
+        width: 100%;
+        display: grid;
+        gap: 1rem;
+      }
+
+      .bar-item {
+        display: grid;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: rgba(16, 34, 52, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1.4rem;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+      }
+
+      .bar-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .bar-name {
+        flex: 1;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text);
+        min-width: 0;
+      }
+
+      .bar-value {
+        color: #f7fbff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .bar-track {
+        position: relative;
+        height: 1.4rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .bar-fill {
+        height: 100%;
+        border-radius: 999px;
+        width: 0;
+        min-width: 2%;
+        transition: width 160ms ease;
+      }
+
+      .bar-handle {
+        position: absolute;
+        top: 50%;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 2px solid rgba(78, 162, 255, 0.95);
+        box-shadow: 0 0 0 3px rgba(7, 16, 26, 0.9);
+        transform: translate(-50%, -50%);
+        cursor: grab;
+        touch-action: none;
+      }
+
+      .bar-handle:active {
+        cursor: grabbing;
+        transform: translate(-50%, -50%) scale(1.05);
+      }
+
+      .modal-note {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 860px) {
+        .quiz-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .hero-panel {
+        display: grid;
+        gap: 1rem;
+        position: relative;
+      }
+
+      .dashboard-card {
+        position: relative;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 32px;
+        padding: 2rem;
+        box-shadow: var(--shadow);
+      }
+
+      .dashboard-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(78, 162, 255, 0.08), transparent 40%);
+        pointer-events: none;
+      }
+
+      .dashboard-card h2 {
+        margin: 0 0 1rem;
+        font-size: 1.35rem;
+        color: var(--text);
+      }
+
+      .dashboard-card p {
+        margin: 0 0 1.8rem;
+        color: var(--text-muted);
+        line-height: 1.75;
+      }
+
+      .dash-grid {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1.5rem;
+        padding: 1rem 1.2rem;
+        transition: transform 220ms ease, border-color 220ms ease;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(78, 162, 255, 0.2);
+      }
+
+      .stat-card strong {
+        display: block;
         font-size: 2rem;
-        color: #222;
+        color: var(--primary);
+      }
+
+      .stat-card span {
+        color: var(--text-muted);
+      }
+
+      .progress-list {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .progress-item {
+        display: grid;
+        gap: 0.5rem;
+      }
+
+      .progress-item label {
+        font-size: 0.95rem;
+        color: var(--text);
+      }
+
+      .progress-track {
+        height: 0.85rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        width: 0;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+        transition: width 1.5s ease;
+      }
+
+
+      section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 4rem 1.5rem;
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      section.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .section-intro {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+      }
+
+      .section-intro h2 {
+        margin: 0;
+        font-size: clamp(2rem, 3vw, 3rem);
+        line-height: 1.05;
+        color: var(--text);
+      }
+
+      .section-intro p {
+        max-width: 620px;
+        margin: 1rem 0 0;
+        color: var(--text-muted);
+      }
+
+      .info-cards,
+      .news-grid,
+      .contact-grid,
+      .facts,
+      .service-list {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .info-cards,
+      .news-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
+
+      .service-list {
+        grid-template-columns: 1fr;
+      }
+
+      .facts {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        margin-top: 2rem;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1.3fr 0.7fr;
+      }
+
+      .info-card,
+      .news-card,
+      .service-item,
+      .fact,
+      .contact-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 1.5rem;
+        padding: 1.75rem;
+        box-shadow: var(--shadow);
+        transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
+      }
+
+      .info-card:hover,
+      .news-card:hover,
+      .service-item:hover,
+      .fact:hover,
+      .contact-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(78, 162, 255, 0.18);
+        background: var(--surface-soft);
+      }
+
+      .info-card h3,
+      .news-card h3,
+      .service-item h3,
+      .contact-card h3,
+      .fact strong {
+        color: var(--primary);
+      }
+
+      .info-card p,
+      .news-card p,
+      .service-item p,
+      .contact-card p,
+      .fact span {
+        color: var(--text-muted);
+      }
+
+      .service-item {
+        background: var(--surface);
+      }
+
+      .contact-list {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0 0;
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .contact-list li {
+        display: grid;
+        gap: 0.25rem;
+      }
+
+      .contact-list strong {
+        color: var(--primary);
+      }
+
+      footer {
+        padding: 2rem 1.5rem;
+        background: #0c141f;
+        border-top: 1px solid var(--border);
+        color: #a6b8d6;
+        text-align: center;
+      }
+
+      footer a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      @media (max-width: 960px) {
+        .hero-grid,
+        .contact-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .section-intro {
+          flex-direction: column;
+        }
+      }
+
+      @media (max-width: 640px) {
+        nav {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .navigation a {
+          padding: 0.65rem 0.9rem;
+        }
+
+        .hero {
+          padding-top: 3rem;
+        }
+      }
+
+      @keyframes heroFade {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
     </style>
   </head>
   <body>
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#info">Info</a>
-      <a href="#kontakt">Kontakt</a>
-    </nav>
+    <header>
+      <nav>
+        <div class="nav-left">
+          <button class="theme-toggle" id="themeToggle" aria-label="Wechsel zu hellem Modus" type="button">
+            <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+            <span class="theme-toggle-text">Dark</span>
+          </button>
+          <div class="brand">
+            <span class="brand-icon"></span>
+            Kommunaler Haushalt Offenburg
+          </div>
+        </div>
+        <div class="navigation">
+          <a href="#home">Start</a>
+          <a href="#haushalt">Haushalt</a>
+          <a href="#verwaltung">Abläufe</a>
+          <a href="#transparenz">Transparenz</a>
+          <a href="#kontakt">Kontakt</a>
+          <a class="button secondary" href="#" id="openQuiz">Quiz</a>
+        </div>
+      </nav>
+    </header>
+
     <main>
-      <h1>Stadt Offenburg</h1>
+      <section class="hero visible" id="home">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="badge">Haushaltsinfo</span>
+            <h1>Der kommunale Haushalt erklärt für Jugendliche in Offenburg.</h1>
+            <p>Hier erfährst du einfach, wo Geld herkommt, wofür es ausgegeben wird und wie die Stadt für Schulen, Spielplätze, Notdienste und Freizeit sorgt.</p>
+            <div class="hero-actions">
+              <a class="button primary" href="#haushalt">Was ist ein Haushalt?</a>
+              <a class="button secondary" href="#transparenz">Warum das wichtig ist</a>
+              <a class="button secondary" href="#" id="openQuizHero">Quiz starten</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="haushalt" class="section reveal">
+        <div class="section-intro">
+          <div>
+            <h2>Haushaltsstruktur</h2>
+            <p>Der Haushalt einer Stadt umfasst Einnahmen und Ausgaben. Er zeigt, wie Mittel auf Leistungen verteilt werden und welche Prioritäten festgelegt sind.</p>
+          </div>
+        </div>
+
+        <div class="info-cards">
+          <article class="info-card">
+            <h3>Wo Geld herkommt</h3>
+            <p>Der Haushalt bekommt Geld aus Steuern, Gebühren und Zuschüssen vom Bund oder Land. Beispiele: Grundsteuer, Gewerbesteuer und Hundesteuer.</p>
+          </article>
+          <article class="info-card">
+            <h3>Wofür Geld ausgegeben wird</h3>
+            <p>Das Geld fließt in Schulen, Kindergärten, Spielplätze, Bahnhöfe, Beleuchtung, Notdienste und Feste. Jede Ausgabe betrifft das Leben in der Stadt.</p>
+          </article>
+          <article class="info-card">
+            <h3>Was der Haushalt kann</h3>
+            <p>Der Haushalt zeigt, was möglich ist: neue Projekte, Reparaturen und Angebote wie Sport, Kultur oder Jugendtreffs.</p>
+          </article>
+        </div>
+
+        <div class="info-cards">
+          <article class="info-card">
+            <h3>Einfach erklärt</h3>
+            <p>Wenn du zum Beispiel eine neue Skate-Anlage willst, braucht es Geld aus dem Haushalt. Die Stadt entscheidet, ob genug Geld dafür da ist.</p>
+          </article>
+          <article class="info-card">
+            <h3>Zum Anklicken</h3>
+            <details>
+              <summary><strong>Steuern</strong> — Was ist das?</summary>
+              <p>Steuern sind Geld, das alle zahlen. Ein Teil davon hilft, Straßen, Schulen und Parks zu finanzieren.</p>
+            </details>
+            <details>
+              <summary><strong>Fördermittel</strong> — Was bedeutet das?</summary>
+              <p>Das sind Zuschüsse von Bund oder Land. Sie helfen, größere Projekte wie Bahnhofs-Sanierungen zu bezahlen.</p>
+            </details>
+          </article>
+        </div>
+      </section>
+
+      <section id="verwaltung" class="section reveal">
+        <div class="section-intro">
+          <div>
+            <h2>Abläufe und Zuständigkeiten</h2>
+            <p>Die Verwaltung bereitet die Zahlen auf, politische Gremien beraten den Entwurf, und die Haushaltsführung sorgt für die Umsetzung.</p>
+          </div>
+        </div>
+
+        <div class="service-list">
+          <div class="service-item">
+            <h3>So wird Geld verteilt</h3>
+            <p>Die Stadt prüft, welche Projekte wichtig sind. Schulen, Spielplätze, Bahnhofsanlagen und Notdienste stehen oft ganz oben auf der Liste.</p>
+          </div>
+          <div class="service-item">
+            <h3>Wie Jugendliche mitmachen können</h3>
+            <p>Jugendliche können Vorschläge machen, beim Jugendrat mitreden oder Fördergelder für eigene Projekte beantragen.</p>
+          </div>
+          <div class="service-item">
+            <h3>Wie man Geld beanspruchen kann</h3>
+            <p>Vereine und Gruppen schicken Ideen ins Rathaus. Wenn der Plan passt, kann es Zuschüsse oder Projektgeld geben.</p>
+          </div>
+          <div class="service-item">
+            <h3>Wie Haushalte verglichen werden</h3>
+            <p>Kommunen schauen sich gegenseitig an: Wer hat mehr Geld, wer weniger? Das hilft, besser zu planen und voneinander zu lernen.</p>
+          </div>
+          <div class="service-item">
+            <h3>Warum Wirtschaft gut erklärt werden sollte</h3>
+            <p>Wenn Jugendliche verstehen, wie Geld geplant wird, können sie mitreden und wichtige Entscheidungen mitgestalten.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="transparenz" class="section reveal">
+        <div class="section-intro">
+          <div>
+            <h2>Transparenz und Warum das wichtig ist</h2>
+            <p>Jugendliche sollten wissen, wie Geld in der Stadt eingesetzt wird. Je besser das Verständnis, desto einfacher ist es, sich einzumischen.</p>
+          </div>
+        </div>
+
+        <div class="facts">
+          <div class="fact">
+            <strong>Haushaltsplan</strong>
+            <span>Hier steht, wie viel Geld für Schule, Sport und Straßen eingeplant wird.</span>
+          </div>
+          <div class="fact">
+            <strong>Jahresabschluss</strong>
+            <span>Zeigt, was wirklich ausgegeben wurde, und ob genug Geld da war.</span>
+          </div>
+          <div class="fact">
+            <strong>Rechenschaft</strong>
+            <span>Zeigt, ob Geld sinnvoll verwendet wurde und wer dafür verantwortlich ist.</span>
+          </div>
+          <div class="fact">
+            <strong>Mitreden</strong>
+            <span>Jugendliche können Vorschläge machen und beim Haushalt mitreden, zum Beispiel im Jugendparlament.</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="themen" class="section reveal">
+        <div class="section-intro">
+          <div>
+            <h2>Wofür das Geld verwendet wird</h2>
+            <p>In Offenburg entscheidet der Haushalt, ob Schulhöfe, Spielplätze, Bahnhöfe oder Notdienste besser werden.</p>
+          </div>
+        </div>
+
+        <div class="news-grid">
+          <article class="news-card">
+            <h3>Bildung und Kinder</h3>
+            <p>Schulen, Kindergärten und Jugendzentren sind wichtige Ausgaben, damit Kinder und Jugendliche gute Angebote bekommen.</p>
+          </article>
+          <article class="news-card">
+            <h3>Freizeit und öffentliche Räume</h3>
+            <p>Spielplätze, Veranstaltungen, Sportplätze und Beleuchtung schaffen Orte, die Jugendliche nutzen können.</p>
+          </article>
+          <article class="news-card">
+            <h3>Verkehr und Bahnhöfe</h3>
+            <p>Geld fließt in Bahnhofs-Sanierung, Haltestellen, Züge und Wege, damit Jugendliche sicher unterwegs sind.</p>
+          </article>
+          <article class="news-card">
+            <h3>Notdienste</h3>
+            <p>Feuerwehr, Krankenhäuser und Polizei brauchen Geld, damit sie schnell helfen können, wenn es brennt oder ein Unfall passiert.</p>
+          </article>
+          <article class="news-card">
+            <h3>Wohnen und Stadtleben</h3>
+            <p>Altstadt, Seniorenheime und Feste werden geplant, damit das Zusammenleben in der Stadt gut klappt.</p>
+          </article>
+          <article class="news-card">
+            <h3>Einnahmen</h3>
+            <p>Die Stadt bekommt Geld aus Zuschüssen, Gebühren und verschiedenen Steuern wie Grundsteuer, Gewerbesteuer und Hundesteuer.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="kontakt" class="section reveal">
+        <div class="section-intro">
+          <div>
+            <h2>Wie du selbst mitmachen kannst</h2>
+            <p>Jugendliche können eigene Ideen einbringen, Projektförderung beantragen oder sich im Jugendrat informieren lassen.</p>
+          </div>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-card">
+            <h3>Geld für Projekte</h3>
+            <p>Vereine, Schulen und Gruppen können Mittel beantragen. Wenn du ein Projekt für Jugend oder Sport hast, kannst du anfragen.</p>
+          </div>
+          <div class="contact-card">
+            <h3>Wichtige Kontakte</h3>
+            <p>Rathaus und Bürgerbüro unterstützen dich bei Förderanträgen. Frage nach dem Jugendhaushalt, Projektförderung oder Beteiligungsangeboten.</p>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <footer>
+      <p>Informationsseite zum kommunalen Haushalt von Offenburg. Keine offizielle Darstellung einer Stadtverwaltung.</p>
+      <p><a href="#home">Zum Anfang</a></p>
+    </footer>
+
+    <div class="modal-backdrop" id="quizModal" role="dialog" aria-modal="true" aria-labelledby="quizModalTitle" hidden>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="quizModalTitle">Budget-Übung: Verteile 10 Mio €</h2>
+          <div class="modal-header-actions">
+            <button class="button secondary" id="resetQuiz" type="button">Neu starten</button>
+            <button class="modal-close" id="closeQuiz" aria-label="Schließen">✕</button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="budget-grid">
+            <div class="budget-info">
+              <p>Verteile 10 Mio € auf sechs wichtige Bereiche. Klick + oder - und sieh, wie viel Prozent des Budgets noch frei bleibt.</p>
+              <div class="budget-summary">
+                <strong>Budgetübersicht</strong>
+                <p id="totalPercent">0 % verwendet</p>
+                <p id="budgetLeft">Verbleibend: 100% · 10.000.000 €</p>
+              </div>
+              <p class="modal-note">Einfaches, klares Budget-Feature: Du kannst nicht mehr ausgeben als das vorhandene Gesamtbudget.</p>
+            </div>
+            <div class="budget-list" id="budgetList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const sections = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              const bars = entry.target.querySelectorAll('.progress-bar');
+              bars.forEach((bar) => {
+                const value = bar.dataset.progress;
+                bar.style.width = value + '%';
+              });
+            } else {
+              entry.target.classList.remove('visible');
+            }
+          });
+        },
+        { threshold: 0.22 }
+      );
+
+      document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('page-loaded');
+      });
+
+      sections.forEach((section, index) => {
+        section.style.transitionDelay = `${index * 120}ms`;
+        observer.observe(section);
+      });
+
+      const counters = document.querySelectorAll('[data-target]');
+      const countObserver = new IntersectionObserver(
+        (entries, observerRef) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const element = entry.target;
+            const target = Number(element.dataset-target);
+            const step = Math.max(1, Math.round(target / 80));
+            let current = 0;
+            const interval = setInterval(() => {
+              current += step;
+              if (current >= target) {
+                element.textContent = target;
+                clearInterval(interval);
+                return;
+              }
+              element.textContent = current;
+            }, 16);
+            observerRef.unobserve(element);
+          });
+        },
+        { threshold: 0.3 }
+      );
+
+      counters.forEach((counter) => countObserver.observe(counter));
+
+      const quizModal = document.getElementById('quizModal');
+      const openQuizButtons = document.querySelectorAll('#openQuiz, #openQuizHero');
+      const closeQuiz = document.getElementById('closeQuiz');
+      const resetQuizButton = document.getElementById('resetQuiz');
+      const budgetList = document.getElementById('budgetList');
+      const totalPercent = document.getElementById('totalPercent');
+      const budgetLeft = document.getElementById('budgetLeft');
+      const themeToggle = document.getElementById('themeToggle');
+      const themeText = themeToggle.querySelector('.theme-toggle-text');
+      const bodyElement = document.body;
+      const budgetTotal = 10000000;
+      const themeKey = 'offenburgTheme';
+
+      const initialCategories = [
+        { name: 'Schulen & Bildung', value: 15 },
+        { name: 'Freizeit & Sport', value: 15 },
+        { name: 'Öffentlicher Verkehr', value: 15 },
+        { name: 'Sicherheit & Notdienste', value: 15 },
+        { name: 'Umwelt & Grünflächen', value: 15 },
+        { name: 'Kultur & Jugendprojekte', value: 15 }
+      ];
+
+      let categories = initialCategories.map((item) => ({ ...item }));
+
+      function formatMoney(amount) {
+        return amount.toLocaleString('de-DE') + ' €';
+      }
+
+      function applyTheme(theme) {
+        bodyElement.dataset.theme = theme;
+        const isLight = theme === 'light';
+        themeToggle.classList.toggle('active', isLight);
+        themeToggle.setAttribute('aria-label', isLight ? 'Wechsel zu dunklem Modus' : 'Wechsel zu hellem Modus');
+        themeText.textContent = isLight ? 'Light' : 'Dark';
+      }
+
+      function toggleTheme() {
+        const nextTheme = bodyElement.dataset.theme === 'light' ? 'dark' : 'light';
+        applyTheme(nextTheme);
+        try {
+          localStorage.setItem(themeKey, nextTheme);
+        } catch (error) {
+          // ignore storage errors
+        }
+      }
+
+      function loadTheme() {
+        const storedTheme = localStorage.getItem(themeKey);
+        applyTheme(storedTheme === 'light' ? 'light' : 'dark');
+      }
+
+      function clampCategoryValue(index, value) {
+        const otherTotal = categories.reduce((sum, category, idx) => (idx === index ? sum : sum + category.value), 0);
+        return Math.max(0, Math.min(value, Math.max(0, 100 - otherTotal)));
+      }
+
+      function updateBudget() {
+        const totalPercentValue = categories.reduce((sum, category) => sum + category.value, 0);
+        const remainingPercent = Math.max(0, 100 - totalPercentValue);
+        const remainingAmount = Math.round((remainingPercent / 100) * budgetTotal);
+
+        totalPercent.textContent = `${totalPercentValue}% verwendet`;
+        budgetLeft.textContent = `Verbleibend: ${remainingPercent}% · ${formatMoney(remainingAmount)}`;
+
+        budgetList.querySelectorAll('.budget-item').forEach((item, index) => {
+          const valueLabel = item.querySelector('.bar-value');
+          const progress = item.querySelector('.budget-progress span');
+          const value = categories[index].value;
+          valueLabel.textContent = `${value}%`;
+          progress.style.width = `${value}%`;
+        });
+
+        budgetList.querySelectorAll('[data-action="increase"]').forEach((button) => {
+          const index = Number(button.dataset.index);
+          button.disabled = remainingPercent <= 0 || categories[index].value >= 100;
+        });
+
+        budgetList.querySelectorAll('[data-action="decrease"]').forEach((button) => {
+          const index = Number(button.dataset.index);
+          button.disabled = categories[index].value <= 0;
+        });
+      }
+
+      function renderBudgetList() {
+        budgetList.innerHTML = categories
+          .map(
+            (category, index) => `
+              <div class="budget-item" data-index="${index}">
+                <div class="budget-item-top">
+                  <div class="bar-name">${category.name}</div>
+                  <div class="bar-value">${category.value}%</div>
+                </div>
+                <div class="budget-item-controls">
+                  <button class="control-button" data-index="${index}" data-action="decrease" type="button">-</button>
+                  <button class="control-button" data-index="${index}" data-action="increase" type="button">+</button>
+                </div>
+                <div class="budget-progress"><span style="width: ${category.value}%;"></span></div>
+              </div>`
+          )
+          .join('');
+
+        budgetList.querySelectorAll('.control-button').forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const index = Number(event.currentTarget.dataset.index);
+            const delta = event.currentTarget.dataset.action === 'increase' ? 5 : -5;
+            categories[index].value = clampCategoryValue(index, categories[index].value + delta);
+            renderBudgetList();
+            updateBudget();
+          });
+        });
+
+        updateBudget();
+      }
+
+      function resetQuiz() {
+        categories = initialCategories.map((item) => ({ ...item }));
+        renderBudgetList();
+      }
+
+      function openQuiz(event) {
+        event.preventDefault();
+        quizModal.classList.add('active');
+        quizModal.hidden = false;
+        renderBudgetList();
+      }
+
+      openQuizButtons.forEach((button) => {
+        button.addEventListener('click', openQuiz);
+      });
+
+      closeQuiz.addEventListener('click', () => {
+        quizModal.classList.remove('active');
+        quizModal.hidden = true;
+      });
+
+      resetQuizButton.addEventListener('click', resetQuiz);
+
+      quizModal.addEventListener('click', (event) => {
+        if (event.target === quizModal) {
+          quizModal.classList.remove('active');
+          quizModal.hidden = true;
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && quizModal.classList.contains('active')) {
+          quizModal.classList.remove('active');
+          quizModal.hidden = true;
+        }
+      });
+
+      themeToggle.addEventListener('click', toggleTheme);
+      loadTheme();
+      renderBudgetList();
+    </script>
   </body>
 </html>
+
+
+
