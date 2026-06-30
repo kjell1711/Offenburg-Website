@@ -1,8 +1,8 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.2",
   "changes": [
+    "2026-06-30 — test (kjell1711)",
     "2026-06-30 — Neuer Eintrag: Benutzer meldet, dass das Modal nicht angezeigt wird und bittet darum, neue Prompts automatisch in das Modal einzufügen.",
-    "Initial release: Basisinhalte und Layout",
-    "Einfaches Budget-Feature ergänzt (Version 1.0.0)"
+    "Initial release: Basisinhalte und Layout"
   ]
 }
