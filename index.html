@@ -188,6 +188,182 @@
         transform: translateY(-2px);
       }
 
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(4, 10, 20, 0.78);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        z-index: 50;
+      }
+
+      .modal-backdrop.active {
+        display: flex;
+      }
+
+      .modal-content {
+        width: min(920px, 100%);
+        max-height: 90vh;
+        overflow: hidden;
+        background: rgba(12, 20, 31, 0.98);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 1.5rem;
+        box-shadow: var(--shadow);
+        position: relative;
+        padding: 1.75rem;
+      }
+
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .modal-header h2 {
+        margin: 0;
+        font-size: 1.6rem;
+      }
+
+      .modal-close {
+        background: transparent;
+        border: none;
+        color: var(--text);
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.35rem;
+      }
+
+      .modal-body {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 1rem;
+      }
+
+      .quiz-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+
+      .quiz-info {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .quiz-info p {
+        margin: 0;
+        color: var(--text-muted);
+      }
+
+      .budget-summary {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1.2rem;
+        padding: 1rem;
+      }
+
+      .budget-summary strong {
+        display: block;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .category-list {
+        display: grid;
+        gap: 0.85rem;
+      }
+
+      .category-item {
+        display: grid;
+        gap: 0.35rem;
+      }
+
+      .category-item label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.95rem;
+        color: var(--text);
+      }
+
+      .category-item input[type="range"] {
+        width: 100%;
+      }
+
+      .chart-board {
+        position: relative;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1.5rem;
+        min-height: 360px;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        cursor: grab;
+        transform: translate(0, 0);
+      }
+
+      .chart-board:active {
+        cursor: grabbing;
+      }
+
+      .pie-chart {
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: conic-gradient(#4ea2ff 0%, #4ea2ff 10%, #5fb0ff 10%, #5fb0ff 20%, #7ed957 20%, #7ed957 30%, #f1c33f 30%, #f1c33f 40%, #f86f6f 40%, #f86f6f 50%, #bb6cf7 50%, #bb6cf7 60%, #54c5c9 60%, #54c5c9 70%, #ff8fb8 70%, #ff8fb8 80%, #ffbf65 80%, #ffbf65 90%, #6ecbff 90%, #6ecbff 100%);
+        position: relative;
+        transition: background 0.2s ease, filter 0.2s ease;
+      }
+
+      .pie-center {
+        position: absolute;
+        inset: 24%;
+        border-radius: 50%;
+        background: rgba(7, 16, 26, 0.96);
+        display: grid;
+        place-items: center;
+        color: var(--text);
+        text-align: center;
+        padding: 1rem;
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+
+      .chart-legend {
+        display: grid;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+      }
+
+      .chart-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .chart-swatch {
+        width: 0.9rem;
+        height: 0.9rem;
+        border-radius: 0.3rem;
+        display: inline-block;
+      }
+
+      .modal-note {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 860px) {
+        .quiz-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
       .hero-panel {
         display: grid;
         gap: 1rem;
@@ -469,6 +645,7 @@
           <a href="#verwaltung">Abläufe</a>
           <a href="#transparenz">Transparenz</a>
           <a href="#kontakt">Kontakt</a>
+          <a class="button secondary" href="#" id="openQuiz">Quiz</a>
         </div>
       </nav>
     </header>
@@ -483,6 +660,7 @@
             <div class="hero-actions">
               <a class="button primary" href="#haushalt">Haushaltsstruktur</a>
               <a class="button secondary" href="#transparenz">Mehr Transparenz</a>
+              <a class="button secondary" href="#" id="openQuizHero">Quiz starten</a>
             </div>
           </div>
         </div>
@@ -599,19 +777,21 @@
       <section id="kontakt" class="section reveal">
         <div class="section-intro">
           <div>
-            <h2>Hinweise und Quellen</h2>
-            <p>Diese Seite bietet allgemeine Informationen zum kommunalen Haushalt. Für genaue Zahlen und Beschlüsse gelten die offiziellen Dokumente der jeweiligen Kommune.</p>
+            <h2>Kontakt</h2>
+            <p>Wenn Sie Kontakt brauchen, melden Sie sich bitte bei den folgenden Anlaufstellen. Rathaus und Bürgerbüro unterstützen Sie bei Fragen rund um Haushalt und Verwaltung.</p>
           </div>
         </div>
 
         <div class="contact-grid">
           <div class="contact-card">
-            <h3>Weiterführende Informationen</h3>
-            <p>Haushaltspläne und Jahresabschlüsse werden von vielen Kommunen als Dokumente online bereitgestellt.</p>
+            <h3>Rathaus</h3>
+            <p>Rathaus: <strong>0781 82-0</strong></p>
+            <p>Bürgerbüro: <strong>0781 82-2000</strong> / <strong>0781 82-7251</strong></p>
+            <p>Wenn Sie Kontakt benötigen, können Sie sich hier melden. Die Teams helfen gern weiter.</p>
           </div>
           <div class="contact-card">
-            <h3>Beteiligte Bereiche</h3>
-            <p>Finanzverwaltung, Rechnungsprüfung und Fachämter sind die zentralen Ansprechpartner für Haushaltsthemen.</p>
+            <h3>Service und Transparenz</h3>
+            <p>Haushaltsfragen, Bürgeranliegen und Informationswünsche werden über Rathaus und Bürgerbüro koordiniert. Nutzen Sie diese Anlaufstellen, um Unterstützung zu erhalten.</p>
           </div>
         </div>
       </section>
@@ -621,6 +801,35 @@
       <p>Informationsseite zum kommunalen Haushalt von Offenburg. Keine offizielle Darstellung einer Stadtverwaltung.</p>
       <p><a href="#home">Zum Anfang</a></p>
     </footer>
+
+    <div class="modal-backdrop" id="quizModal" role="dialog" aria-modal="true" aria-labelledby="quizModalTitle" hidden>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="quizModalTitle">Haushalts-Quiz: Verteile 10 Mio €</h2>
+          <button class="modal-close" id="closeQuiz" aria-label="Schließen">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="quiz-grid">
+            <div class="quiz-info">
+              <p>Du hast 10 Millionen Euro zur Verfügung. Teile den Betrag selbst auf die Bereiche auf. Das Kreisdiagramm passt sich automatisch an. Du kannst die Grafik innerhalb des Modalfensters verschieben.</p>
+              <div class="budget-summary">
+                <strong>Budgetübersicht</strong>
+                <p id="totalPercent">100 % verwendet</p>
+                <p id="budgetLeft">Verbleibend: 0 €</p>
+              </div>
+              <div id="categoryList" class="category-list"></div>
+              <p class="modal-note">Ziehe die Regler, um den Anteil für jedes Thema anzupassen. Das Diagramm zeigt die Verteilung in Prozent.</p>
+            </div>
+            <div class="chart-board" id="chartBoard">
+              <div class="pie-chart" id="pieChart">
+                <div class="pie-center">10 Mio € Budget<br>Passe die Regler an</div>
+              </div>
+              <div class="chart-legend" id="chartLegend"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script>
       const sections = document.querySelectorAll('.reveal');
@@ -669,10 +878,161 @@
       );
 
       counters.forEach((counter) => countObserver.observe(counter));
+
+      const quizModal = document.getElementById('quizModal');
+      const openQuizButtons = document.querySelectorAll('#openQuiz, #openQuizHero');
+      const closeQuiz = document.getElementById('closeQuiz');
+      const categoryList = document.getElementById('categoryList');
+      const pieChart = document.getElementById('pieChart');
+      const totalPercent = document.getElementById('totalPercent');
+      const budgetLeft = document.getElementById('budgetLeft');
+      const chartLegend = document.getElementById('chartLegend');
+      const chartBoard = document.getElementById('chartBoard');
+      const budgetTotal = 10000000;
+
+      const categories = [
+        { name: 'Hobby & Freizeit', color: '#4ea2ff', value: 10 },
+        { name: 'Schulversorgung', color: '#5fb0ff', value: 10 },
+        { name: 'Spielplätze', color: '#7ed957', value: 10 },
+        { name: 'Öffentliche Verkehrsmittel', color: '#f1c33f', value: 10 },
+        { name: 'Klima', color: '#f86f6f', value: 10 },
+        { name: 'Notdienste/Krankenhaus', color: '#bb6cf7', value: 10 },
+        { name: 'Automatisierung der KI & Stadtverwaltung', color: '#54c5c9', value: 10 },
+        { name: 'Neubau ZOB', color: '#ff8fb8', value: 10 },
+        { name: 'Beleuchtung Rathaus-Platz', color: '#ffbf65', value: 10 },
+        { name: 'Baumpflanzungen Innenstadt', color: '#6ecbff', value: 10 },
+        { name: 'Große Reparaturen Sporthallen', color: '#8ef7b8', value: 5 },
+        { name: 'Zuschuss Schulverpflegung', color: '#d48cff', value: 5 }
+      ];
+
+      function formatMoney(amount) {
+        return amount.toLocaleString('de-DE') + ' €';
+      }
+
+      function updateChart() {
+        const totalPercentValue = categories.reduce((sum, category) => sum + category.value, 0);
+        const totalAmount = categories.reduce((sum, category) => sum + (category.value / 100) * budgetTotal, 0);
+        const remaining = budgetTotal - totalAmount;
+        totalPercent.textContent = `${totalPercentValue}% verwendet`;
+        budgetLeft.textContent = remaining >= 0 ? `Verbleibend: ${formatMoney(remaining)}` : `Überbudget: ${formatMoney(Math.abs(remaining))}`;
+
+        categories.forEach((category, index) => {
+          const label = document.getElementById(`value-${index}`);
+          if (label) {
+            const amount = (category.value / 100) * budgetTotal;
+            label.textContent = `${category.value}% / ${formatMoney(amount)}`;
+          }
+        });
+
+        const segments = [];
+        let current = 0;
+        categories.forEach((category) => {
+          if (category.value > 0) {
+            const start = current;
+            const end = current + category.value;
+            segments.push(`${category.color} ${start}% ${end}%`);
+            current = end;
+          }
+        });
+        if (current < 100) {
+          segments.push(`rgba(255,255,255,0.05) ${current}% 100%`);
+        }
+        pieChart.style.background = `conic-gradient(${segments.join(', ')})`;
+        pieChart.style.filter = totalPercentValue !== 100 ? 'saturate(0.9)' : 'none';
+      }
+
+      function renderCategories() {
+        categoryList.innerHTML = categories
+          .map(
+            (category, index) =>
+              `<div class="category-item">
+                <label for="category-${index}">${category.name}<span id="value-${index}">${category.value}% / ${formatMoney((category.value / 100) * budgetTotal)}</span></label>
+                <input type="range" id="category-${index}" min="0" max="100" step="1" value="${category.value}" data-index="${index}">
+              </div>`
+          )
+          .join('');
+
+        categoryList.querySelectorAll('input[type="range"]').forEach((input) => {
+          input.addEventListener('input', (event) => {
+            const index = Number(event.target.dataset.index);
+            categories[index].value = Number(event.target.value);
+            updateChart();
+          });
+        });
+      }
+
+      function renderLegend() {
+        chartLegend.innerHTML = categories
+          .map(
+            (category) =>
+              `<span><i class="chart-swatch" style="background: ${category.color}"></i>${category.name}</span>`
+          )
+          .join('');
+      }
+
+      openQuizButtons.forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.preventDefault();
+          quizModal.classList.add('active');
+          quizModal.hidden = false;
+          renderLegend();
+        });
+      });
+
+      closeQuiz.addEventListener('click', () => {
+        quizModal.classList.remove('active');
+        quizModal.hidden = true;
+      });
+
+      quizModal.addEventListener('click', (event) => {
+        if (event.target === quizModal) {
+          quizModal.classList.remove('active');
+          quizModal.hidden = true;
+        }
+      });
+
+      let dragActive = false;
+      let dragStartX = 0;
+      let dragStartY = 0;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      chartBoard.addEventListener('pointerdown', (event) => {
+        dragActive = true;
+        dragStartX = event.clientX;
+        dragStartY = event.clientY;
+        const transform = chartBoard.style.transform.match(/translate\((-?\d+\.?\d*)px,\s*(-?\d+\.?\d*)px\)/);
+        if (transform) {
+          offsetX = Number(transform[1]);
+          offsetY = Number(transform[2]);
+        } else {
+          offsetX = 0;
+          offsetY = 0;
+        }
+        chartBoard.setPointerCapture(event.pointerId);
+      });
+
+      chartBoard.addEventListener('pointermove', (event) => {
+        if (!dragActive) return;
+        const dx = event.clientX - dragStartX;
+        const dy = event.clientY - dragStartY;
+        chartBoard.style.transform = `translate(${offsetX + dx}px, ${offsetY + dy}px)`;
+      });
+
+      chartBoard.addEventListener('pointerup', (event) => {
+        dragActive = false;
+        chartBoard.releasePointerCapture(event.pointerId);
+      });
+
+      chartBoard.addEventListener('pointerleave', () => {
+        dragActive = false;
+      });
+
+      renderCategories();
+      updateChart();
     </script>
   </body>
 </html>
-
 
 
 
