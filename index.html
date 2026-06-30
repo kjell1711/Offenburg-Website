@@ -244,7 +244,7 @@
       .modal-content {
         width: min(920px, 100%);
         max-height: 90vh;
-        overflow: hidden;
+        overflow: auto;
         background: rgba(12, 20, 31, 0.98);
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 1.5rem;
@@ -260,6 +260,21 @@
         gap: 1rem;
       }
 
+      .modal-header-actions {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      .modal-body {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 1rem;
+        max-height: calc(90vh - 150px);
+        overflow: auto;
+        padding-right: 0.25rem;
+      }
+
       .modal-header h2 {
         margin: 0;
         font-size: 1.6rem;
@@ -272,14 +287,6 @@
         font-size: 1.5rem;
         cursor: pointer;
         padding: 0.35rem;
-      }
-
-      .modal-body {
-        display: grid;
-        gap: 1.5rem;
-        margin-top: 1rem;
-        max-height: calc(90vh - 150px);
-        overflow: hidden;
       }
 
       .quiz-grid {
@@ -879,7 +886,10 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 id="quizModalTitle">Haushalts-Quiz: Verteile 10 Mio €</h2>
-          <button class="modal-close" id="closeQuiz" aria-label="Schließen">✕</button>
+          <div class="modal-header-actions">
+            <button class="button secondary" id="resetQuiz" type="button">Neu starten</button>
+            <button class="modal-close" id="closeQuiz" aria-label="Schließen">✕</button>
+          </div>
         </div>
         <div class="modal-body">
           <div class="quiz-grid">
@@ -888,9 +898,9 @@
               <div class="budget-summary">
                 <strong>Budgetübersicht</strong>
                 <p id="totalPercent">100 % verwendet</p>
-                <p id="budgetLeft">Verbleibend: 0 €</p>
+                <p id="budgetLeft">Verbleibend: 0% · 0 €</p>
               </div>
-              <p class="modal-note">Ziehe den Griff am Ende eines Balkens, um den Anteil der jeweiligen Kategorie anzupassen.</p>
+              <p class="modal-note">Ziehe den Griff am Ende eines Balkens. Die Gesamtverteilung kann nicht größer als das vorhandene Budget sein.</p>
             </div>
             <div class="chart-board" id="chartBoard"></div>
           </div>
@@ -949,29 +959,24 @@
       const quizModal = document.getElementById('quizModal');
       const openQuizButtons = document.querySelectorAll('#openQuiz, #openQuizHero');
       const closeQuiz = document.getElementById('closeQuiz');
+      const resetQuizButton = document.getElementById('resetQuiz');
       const chartBoard = document.getElementById('chartBoard');
       const totalPercent = document.getElementById('totalPercent');
       const budgetLeft = document.getElementById('budgetLeft');
       const budgetTotal = 10000000;
 
-      const categories = [
-        { name: 'Hobby & Freizeit', value: 10 },
-        { name: 'Schulversorgung', value: 10 },
-        { name: 'Spielplätze', value: 10 },
-        { name: 'Öffentliche Verkehrsmittel', value: 10 },
-        { name: 'Klima', value: 10 },
-        { name: 'Notdienste/Krankenhaus', value: 10 },
-        { name: 'Automatisierung der KI & Stadtverwaltung', value: 10 },
-        { name: 'Neubau ZOB', value: 10 },
-        { name: 'Beleuchtung Rathaus-Platz', value: 10 },
-        { name: 'Baumpflanzungen Innenstadt', value: 10 },
-        { name: 'Große Reparaturen Sporthallen', value: 5 },
-        { name: 'Zuschuss Schulverpflegung', value: 5 }
+      const initialCategories = [
+        { name: 'Schulen & Bildung', value: 10 },
+        { name: 'Freizeit & Sport', value: 10 },
+        { name: 'Öffentlicher Verkehr', value: 10 },
+        { name: 'Sicherheit & Notdienste', value: 10 },
+        { name: 'Umwelt & Grünflächen', value: 10 },
+        { name: 'Kultur & Jugendprojekte', value: 10 }
       ];
 
-      const colors = [
-        '#4ea2ff', '#5fb0ff', '#7ed957', '#f1c33f', '#f86f6f', '#bb6cf7', '#54c5c9', '#ff8fb8', '#ffbf65', '#6ecbff', '#8ef7b8', '#d48cff'
-      ];
+      let categories = initialCategories.map((item) => ({ ...item }));
+
+      const colors = ['#4ea2ff', '#5fb0ff', '#7ed957', '#f1c33f', '#f86f6f', '#bb6cf7'];
 
       function formatMoney(amount) {
         return amount.toLocaleString('de-DE') + ' €';
@@ -984,9 +989,10 @@
       function updateChart() {
         const totalPercentValue = categories.reduce((sum, category) => sum + category.value, 0);
         const totalAmount = categories.reduce((sum, category) => sum + (category.value / 100) * budgetTotal, 0);
-        const remaining = budgetTotal - totalAmount;
+        const remainingPercent = Math.max(0, 100 - totalPercentValue);
+        const remainingAmount = Math.round((remainingPercent / 100) * budgetTotal);
         totalPercent.textContent = `${totalPercentValue}% verwendet`;
-        budgetLeft.textContent = remaining >= 0 ? `Verbleibend: ${formatMoney(remaining)}` : `Überbudget: ${formatMoney(Math.abs(remaining))}`;
+        budgetLeft.textContent = `Verbleibend: ${remainingPercent}% · ${formatMoney(remainingAmount)}`;
 
         categories.forEach((category, index) => {
           const bar = chartBoard.querySelector(`.bar-item[data-index="${index}"]`);
@@ -998,29 +1004,32 @@
           const width = Math.min(100, Math.max(0, category.value));
           fill.style.width = `${width}%`;
           handle.style.left = `calc(${width}% - 9px)`;
-          valueLabel.textContent = `${category.value}% / ${formatMoney(amount)}`;
+          valueLabel.textContent = `${category.value}% · ${formatMoney(amount)}`;
         });
+      }
+
+      function clampCategoryValue(index, value) {
+        const otherTotal = categories.reduce((sum, category, idx) => idx === index ? sum : sum + category.value, 0);
+        return Math.max(0, Math.min(value, Math.max(0, 100 - otherTotal)));
       }
 
       function renderBars() {
         chartBoard.innerHTML = `
           <div class="bar-list">
             ${categories
-              .map(
-                (category, index) => {
-                  const width = Math.min(100, Math.max(0, category.value));
-                  return `<div class="bar-item" data-index="${index}">
+              .map((category, index) => {
+                const width = Math.min(100, Math.max(0, category.value));
+                return `<div class="bar-item" data-index="${index}">
                     <div class="bar-top">
                       <div class="bar-name">${category.name}</div>
-                      <div class="bar-value">${category.value}% / ${formatMoney((category.value / 100) * budgetTotal)}</div>
+                      <div class="bar-value">${category.value}% · ${formatMoney((category.value / 100) * budgetTotal)}</div>
                     </div>
-                    <div class="bar-track" data-index="${index}">
+                    <div class="bar-track" data-index="${index}" aria-label="Verteilung für ${category.name}">
                       <div class="bar-fill" style="width: ${width}%; background: ${barGradient(colors[index])};"></div>
                       <div class="bar-handle" data-index="${index}" style="left: calc(${width}% - 9px);"></div>
                     </div>
                   </div>`;
-                }
-              )
+              })
               .join('')}
           </div>`;
 
@@ -1049,7 +1058,7 @@
         const index = Number(track.dataset.index);
         const x = event.offsetX;
         const percent = Math.round((x / track.clientWidth) * 100);
-        categories[index].value = Math.min(100, Math.max(0, percent));
+        categories[index].value = clampCategoryValue(index, percent);
         updateChart();
       }
 
@@ -1057,9 +1066,11 @@
         if (activeBarIndex === null || !currentTrackRect) return;
         const x = event.clientX - currentTrackRect.left;
         const percent = Math.round((x / currentTrackRect.width) * 100);
-        categories[activeBarIndex].value = Math.min(100, Math.max(0, percent));
+        categories[activeBarIndex].value = clampCategoryValue(activeBarIndex, percent);
         updateChart();
       }
+
+
 
       function stopBarDrag(event) {
         if (activeBarIndex === null) return;
@@ -1071,20 +1082,30 @@
         currentTrackRect = null;
       }
 
+      function resetQuiz() {
+        categories = initialCategories.map((item) => ({ ...item }));
+        renderBars();
+        updateChart();
+      }
+
+      function openQuiz(event) {
+        event.preventDefault();
+        quizModal.classList.add('active');
+        quizModal.hidden = false;
+        renderBars();
+        updateChart();
+      }
+
       openQuizButtons.forEach((button) => {
-        button.addEventListener('click', (event) => {
-          event.preventDefault();
-          quizModal.classList.add('active');
-          quizModal.hidden = false;
-          renderBars();
-          updateChart();
-        });
+        button.addEventListener('click', openQuiz);
       });
 
       closeQuiz.addEventListener('click', () => {
         quizModal.classList.remove('active');
         quizModal.hidden = true;
       });
+
+      resetQuizButton.addEventListener('click', resetQuiz);
 
       quizModal.addEventListener('click', (event) => {
         if (event.target === quizModal) {
@@ -1095,6 +1116,13 @@
 
       document.addEventListener('pointermove', dragBar);
       document.addEventListener('pointerup', stopBarDrag);
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && quizModal.classList.contains('active')) {
+          quizModal.classList.remove('active');
+          quizModal.hidden = true;
+        }
+      });
 
       updateChart();
     </script>
