@@ -640,9 +640,100 @@
         transform: translate(-50%, -50%) scale(1.05);
       }
 
-      .modal-note {
-        color: var(--text-muted);
+      .quiz-area {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .quiz-info {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .quiz-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1.2rem;
+        color: var(--text);
+      }
+
+      .quiz-summary span {
+        font-weight: 700;
+      }
+
+      .stacked-bar {
+        position: relative;
+        height: 2.4rem;
+        border-radius: 1.5rem;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        display: flex;
+        min-height: 2.4rem;
+      }
+
+      .quiz-segment {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 5%;
+        color: #fff;
         font-size: 0.92rem;
+        font-weight: 600;
+        transition: background 160ms ease;
+      }
+
+      .quiz-segment::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        opacity: 0.08;
+        background: linear-gradient(135deg, #ffffff 0%, transparent 95%);
+      }
+
+      .quiz-divider {
+        position: absolute;
+        top: 0;
+        width: 14px;
+        height: 100%;
+        margin-left: -7px;
+        cursor: ew-resize;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .quiz-divider-line {
+        width: 2px;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 1px;
+      }
+
+      .quiz-legend {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .quiz-legend-item {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.75rem;
+        align-items: center;
+        padding: 0.85rem 1rem;
+        border-radius: 1.1rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .quiz-color {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
       }
 
       @media (max-width: 860px) {
@@ -949,7 +1040,7 @@
           <a href="#verwaltung">Abläufe</a>
           <a href="#transparenz">Transparenz</a>
           <a href="#kontakt">Kontakt</a>
-          <a class="button secondary" href="#" id="openQuiz">Quiz</a>
+          <!-- Quiz removed per request -->
         </div>
       </nav>
     </header>
@@ -963,8 +1054,7 @@
             <p>Hier erfährst du einfach, wo Geld herkommt, wofür es ausgegeben wird und wie die Stadt für Schulen, Spielplätze, Notdienste und Freizeit sorgt.</p>
             <div class="hero-actions">
               <a class="button primary" href="#haushalt">Was ist ein Haushalt?</a>
-              <a class="button secondary" href="#transparenz">Warum das wichtig ist</a>
-              <a class="button secondary" href="#" id="openQuizHero">Quiz starten</a>
+              <a class="button secondary" href="#transparenz">Warum ist das wichtig?</a>
             </div>
           </div>
         </div>
@@ -995,50 +1085,50 @@
 
         <div class="info-cards">
           <article class="info-card">
-            <h3>Einfach erklärt</h3>
-            <p>Wenn du zum Beispiel eine neue Skate-Anlage willst, braucht es Geld aus dem Haushalt. Die Stadt entscheidet, ob genug Geld dafür da ist.</p>
+            <h3>Einfach erklärt: Was bedeutet der Haushalt?</h3>
+            <p>Ein Haushalt ist wie ein großer Plan für Geld. Er zeigt, wie viel die Stadt ausgibt und wofür sie das Geld verwendet.</p>
+            <p>Wenn du zum Beispiel eine neue Skate-Anlage willst, dann muss im Haushalt genug Geld dafür eingeplant sein. Die Stadt entscheidet, ob das möglich ist.</p>
+            <p>Der Haushalt hilft dabei, faire Entscheidungen zu treffen: zuerst das Wichtigste, dann das Nützliche und am Ende die schönen extra Projekte.</p>
           </article>
           <article class="info-card">
-            <h3>Zum Anklicken</h3>
+            <h3>Zum Anklicken: Was willst du wissen?</h3>
             <details>
               <summary><strong>Steuern</strong> — Was ist das?</summary>
-              <p>Steuern sind Geld, das alle zahlen. Ein Teil davon hilft, Straßen, Schulen und Parks zu finanzieren.</p>
+              <p>Steuern ist Geld, das wir alle geben. Ein Teil davon bezahlt Straßen, Schulen und Parks.</p>
             </details>
             <details>
               <summary><strong>Fördermittel</strong> — Was bedeutet das?</summary>
-              <p>Das sind Zuschüsse von Bund oder Land. Sie helfen, größere Projekte wie Bahnhofs-Sanierungen zu bezahlen.</p>
+              <p>Fördermittel sind Zuschüsse von Bund oder Land. Sie helfen, größere Projekte wie Bahnhofs-Sanierung oder Klimaschutz zu bezahlen.</p>
+            </details>
+            <details>
+              <summary><strong>Haushaltsplan</strong> — Warum ist das wichtig?</summary>
+              <p>Der Plan sagt, wofür Geld bestimmt ist. Er macht klar, was zuerst bezahlt wird und was später möglich ist.</p>
             </details>
           </article>
         </div>
       </section>
 
       <section id="verwaltung" class="section reveal">
-        <div class="section-intro">
-          <div>
-            <h2>Abläufe und Zuständigkeiten</h2>
-            <p>Die Verwaltung bereitet die Zahlen auf, politische Gremien beraten den Entwurf, und die Haushaltsführung sorgt für die Umsetzung.</p>
-          </div>
-        </div>
 
         <div class="service-list">
           <div class="service-item">
-            <h3>So wird Geld verteilt</h3>
+            <h3>Wie wird Geld verteilt?</h3>
             <p>Die Stadt prüft, welche Projekte wichtig sind. Schulen, Spielplätze, Bahnhofsanlagen und Notdienste stehen oft ganz oben auf der Liste.</p>
           </div>
           <div class="service-item">
-            <h3>Wie Jugendliche mitmachen können</h3>
-            <p>Jugendliche können Vorschläge machen, beim Jugendrat mitreden oder Fördergelder für eigene Projekte beantragen.</p>
+            <h3>Wie können Jugendliche mitmachen?</h3>
+            <p>!!!noch ändern!!!.</p>
           </div>
           <div class="service-item">
-            <h3>Wie man Geld beanspruchen kann</h3>
+            <h3>Wie kann man Geld beanspruchen?</h3>
             <p>Vereine und Gruppen schicken Ideen ins Rathaus. Wenn der Plan passt, kann es Zuschüsse oder Projektgeld geben.</p>
           </div>
           <div class="service-item">
-            <h3>Wie Haushalte verglichen werden</h3>
+            <h3>Wie werden Haushalte verglichen?</h3>
             <p>Kommunen schauen sich gegenseitig an: Wer hat mehr Geld, wer weniger? Das hilft, besser zu planen und voneinander zu lernen.</p>
           </div>
           <div class="service-item">
-            <h3>Warum Wirtschaft gut erklärt werden sollte</h3>
+            <h3>Warum sollte Wirtschaft gut erklärt werden?</h3>
             <p>Wenn Jugendliche verstehen, wie Geld geplant wird, können sie mitreden und wichtige Entscheidungen mitgestalten.</p>
           </div>
         </div>
@@ -1108,21 +1198,43 @@
         </div>
       </section>
 
+      <section id="quiz" class="section reveal">
+        <div class="section-intro">
+          <div>
+            <h2>Quiz: Wie würdest du 10 Mio. € verteilen?</h2>
+            <p>Ziehe die Linien zwischen den Bereichen, um die Verteilung zu ändern. Jede Linie zeigt, wo eine Farbe aufhört und die nächste beginnt.</p>
+          </div>
+        </div>
+
+        <div class="quiz-area">
+          <div class="quiz-info">
+            <p>Welche Priorität hat für dich Schule, Freizeit, Umwelt oder Sicherheit? Du kannst die Linien verschieben und sofort sehen, wie viel Geld jede Kategorie bekommt.</p>
+            <div class="quiz-summary">
+              <span id="quizTotalPercent">100 % verteilt</span>
+              <span id="quizTotalAmount">10.000.000 € gesamt</span>
+            </div>
+          </div>
+          <div class="stacked-bar" id="stackedBar"></div>
+          <div class="quiz-legend" id="quizLegend"></div>
+        </div>
+      </section>
+
       <section id="kontakt" class="section reveal">
         <div class="section-intro">
           <div>
-            <h2>Wie du selbst mitmachen kannst</h2>
-            <p>Jugendliche können eigene Ideen einbringen, Projektförderung beantragen oder sich im Jugendrat informieren lassen.</p>
+            <h2>Wie kannst du Kontakt aufnehmen?</h2>
+            <p>Wenn du Fragen hast oder eine Idee einbringen willst, melde dich bei den zuständigen Stellen.</p>
           </div>
         </div>
 
         <div class="contact-grid">
           <div class="contact-card">
-            <h3>Geld für Projekte</h3>
+            <h3>Geld für Projekte?</h3>
             <p>Vereine, Schulen und Gruppen können Mittel beantragen. Wenn du ein Projekt für Jugend oder Sport hast, kannst du anfragen.</p>
           </div>
           <div class="contact-card">
-            <h3>Wichtige Kontakte</h3>
+            <h3>Rathaus & Bürgerbüro</h3>
+            <p>Rathaus: <strong>0781 82-0</strong><br />Bürgerbüro: <strong>0781 82-7251</strong>, <strong>0781 82-2000</strong></p>
             <p>Rathaus und Bürgerbüro unterstützen dich bei Förderanträgen. Frage nach dem Jugendhaushalt, Projektförderung oder Beteiligungsangeboten.</p>
           </div>
         </div>
@@ -1142,7 +1254,7 @@
     </div>
 
     <!-- secret version modal (shows last 3 changes) -->
-    <div class="modal-backdrop" id="versionModal" role="dialog" aria-modal="true" aria-labelledby="versionModalTitle" hidden>
+    <div class="modal-backdrop" id="versionModal" role="dialog" aria-modal="true" aria-labelledby="versionModalTitle">
       <div class="modal-content">
         <div class="modal-header">
           <h2 id="versionModalTitle">Änderungen</h2>
@@ -1157,31 +1269,7 @@
       </div>
     </div>
 
-    <div class="modal-backdrop" id="quizModal" role="dialog" aria-modal="true" aria-labelledby="quizModalTitle" hidden>
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 id="quizModalTitle">Budget-Übung: Verteile 10 Mio €</h2>
-          <div class="modal-header-actions">
-            <button class="button secondary" id="resetQuiz" type="button">Neu starten</button>
-            <button class="modal-close" id="closeQuiz" aria-label="Schließen">✕</button>
-          </div>
-        </div>
-        <div class="modal-body">
-          <div class="budget-grid">
-            <div class="budget-info">
-              <p>Verteile 10 Mio € auf sechs wichtige Bereiche. Klick + oder - und sieh, wie viel Prozent des Budgets noch frei bleibt.</p>
-              <div class="budget-summary">
-                <strong>Budgetübersicht</strong>
-                <p id="totalPercent">0 % verwendet</p>
-                <p id="budgetLeft">Verbleibend: 100% · 10.000.000 €</p>
-              </div>
-              <p class="modal-note">Einfaches, klares Budget-Feature: Du kannst nicht mehr ausgeben als das vorhandene Gesamtbudget.</p>
-            </div>
-            <div class="budget-list" id="budgetList"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- quiz removed -->
 
     <script>
       const sections = document.querySelectorAll('.reveal');
@@ -1212,55 +1300,28 @@
         observer.observe(section);
       });
 
-      const counters = document.querySelectorAll('[data-target]');
-      const countObserver = new IntersectionObserver(
-        (entries, observerRef) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            const element = entry.target;
-            const target = Number(element.dataset-target);
-            const step = Math.max(1, Math.round(target / 80));
-            let current = 0;
-            const interval = setInterval(() => {
-              current += step;
-              if (current >= target) {
-                element.textContent = target;
-                clearInterval(interval);
-                return;
-              }
-              element.textContent = current;
-            }, 16);
-            observerRef.unobserve(element);
-          });
-        },
-        { threshold: 0.3 }
-      );
-
-      counters.forEach((counter) => countObserver.observe(counter));
-
-      const quizModal = document.getElementById('quizModal');
-      const openQuizButtons = document.querySelectorAll('#openQuiz, #openQuizHero');
-      const closeQuiz = document.getElementById('closeQuiz');
-      const resetQuizButton = document.getElementById('resetQuiz');
-      const budgetList = document.getElementById('budgetList');
-      const totalPercent = document.getElementById('totalPercent');
-      const budgetLeft = document.getElementById('budgetLeft');
+      const quizBar = document.getElementById('stackedBar');
+      const quizLegend = document.getElementById('quizLegend');
+      const quizTotalPercent = document.getElementById('quizTotalPercent');
+      const quizTotalAmount = document.getElementById('quizTotalAmount');
       const themeToggle = document.getElementById('themeToggle');
       const themeText = themeToggle.querySelector('.theme-toggle-text');
       const bodyElement = document.body;
-      const budgetTotal = 10000000;
+      const quizTotalAmountBase = 10000000;
       const themeKey = 'offenburgTheme';
 
-      const initialCategories = [
-        { name: 'Schulen & Bildung', value: 15 },
-        { name: 'Freizeit & Sport', value: 15 },
-        { name: 'Öffentlicher Verkehr', value: 15 },
-        { name: 'Sicherheit & Notdienste', value: 15 },
-        { name: 'Umwelt & Grünflächen', value: 15 },
-        { name: 'Kultur & Jugendprojekte', value: 15 }
+      const quizCategories = [
+        { name: 'Schule & Bildung', value: 20 },
+        { name: 'Freizeit & Sport', value: 20 },
+        { name: 'Öffentlicher Verkehr', value: 20 },
+        { name: 'Sicherheit & Notdienste', value: 20 },
+        { name: 'Umwelt & Grünflächen', value: 20 }
       ];
 
-      let categories = initialCategories.map((item) => ({ ...item }));
+      const quizColors = ['#4ea2ff', '#5fb0ff', '#7ed957', '#f1c33f', '#f86f6f', '#bb6cf7', '#54c5c9'];
+      let activeDivider = null;
+      let activePointerId = null;
+      let quizBarRect = null;
 
       function formatMoney(amount) {
         return amount.toLocaleString('de-DE') + ' €';
@@ -1289,109 +1350,135 @@
         applyTheme(storedTheme === 'light' ? 'light' : 'dark');
       }
 
-      function clampCategoryValue(index, value) {
-        const otherTotal = categories.reduce((sum, category, idx) => (idx === index ? sum : sum + category.value), 0);
-        return Math.max(0, Math.min(value, Math.max(0, 100 - otherTotal)));
-      }
+      function updateQuiz() {
+        if (!quizBar || !quizLegend || !quizTotalPercent || !quizTotalAmount) return;
 
-      function updateBudget() {
-        const totalPercentValue = categories.reduce((sum, category) => sum + category.value, 0);
-        const remainingPercent = Math.max(0, 100 - totalPercentValue);
-        const remainingAmount = Math.round((remainingPercent / 100) * budgetTotal);
+        const totalPercent = quizCategories.reduce((sum, category) => sum + category.value, 0);
+        const totalAmount = Math.round((totalPercent / 100) * quizTotalAmountBase);
+        quizTotalPercent.textContent = `${totalPercent}% verteilt`;
+        quizTotalAmount.textContent = `${formatMoney(totalAmount)} gesamt`;
 
-        totalPercent.textContent = `${totalPercentValue}% verwendet`;
-        budgetLeft.textContent = `Verbleibend: ${remainingPercent}% · ${formatMoney(remainingAmount)}`;
-
-        budgetList.querySelectorAll('.budget-item').forEach((item, index) => {
-          const valueLabel = item.querySelector('.bar-value');
-          const progress = item.querySelector('.budget-progress span');
-          const value = categories[index].value;
-          valueLabel.textContent = `${value}%`;
-          progress.style.width = `${value}%`;
+        const segments = quizBar.querySelectorAll('.quiz-segment');
+        segments.forEach((segment, index) => {
+          const category = quizCategories[index];
+          segment.style.flex = `0 0 ${category.value}%`;
+          segment.textContent = `${category.name} ${category.value}%`;
+          segment.style.background = quizColors[index % quizColors.length];
         });
 
-        budgetList.querySelectorAll('[data-action="increase"]').forEach((button) => {
-          const index = Number(button.dataset.index);
-          button.disabled = remainingPercent <= 0 || categories[index].value >= 100;
-        });
-
-        budgetList.querySelectorAll('[data-action="decrease"]').forEach((button) => {
-          const index = Number(button.dataset.index);
-          button.disabled = categories[index].value <= 0;
+        const legendItems = quizLegend.querySelectorAll('.quiz-legend-item');
+        legendItems.forEach((item, index) => {
+          const category = quizCategories[index];
+          item.querySelector('.quiz-legend-name').textContent = category.name;
+          item.querySelector('.quiz-legend-value').textContent = `${category.value}%`;
         });
       }
 
-      function renderBudgetList() {
-        budgetList.innerHTML = categories
-          .map(
-            (category, index) => `
-              <div class="budget-item" data-index="${index}">
-                <div class="budget-item-top">
-                  <div class="bar-name">${category.name}</div>
-                  <div class="bar-value">${category.value}%</div>
-                </div>
-                <div class="budget-item-controls">
-                  <button class="control-button" data-index="${index}" data-action="decrease" type="button">-</button>
-                  <button class="control-button" data-index="${index}" data-action="increase" type="button">+</button>
-                </div>
-                <div class="budget-progress"><span style="width: ${category.value}%;"></span></div>
-              </div>`
-          )
-          .join('');
+      function renderQuiz() {
+        if (!quizBar || !quizLegend) return;
 
-        budgetList.querySelectorAll('.control-button').forEach((button) => {
-          button.addEventListener('click', (event) => {
-            const index = Number(event.currentTarget.dataset.index);
-            const delta = event.currentTarget.dataset.action === 'increase' ? 5 : -5;
-            categories[index].value = clampCategoryValue(index, categories[index].value + delta);
-            renderBudgetList();
-            updateBudget();
-          });
+        quizBar.innerHTML = '';
+        quizLegend.innerHTML = '';
+
+        quizCategories.forEach((category, index) => {
+          const segment = document.createElement('div');
+          segment.className = 'quiz-segment';
+          segment.style.flex = `0 0 ${category.value}%`;
+          segment.style.background = quizColors[index % quizColors.length];
+          segment.textContent = `${category.name} ${category.value}%`;
+          quizBar.appendChild(segment);
+
+          if (index < quizCategories.length - 1) {
+            const divider = document.createElement('div');
+            divider.className = 'quiz-divider';
+            divider.dataset.index = index;
+            divider.innerHTML = '<div class="quiz-divider-line"></div>';
+            divider.addEventListener('pointerdown', startDividerDrag);
+            quizBar.appendChild(divider);
+          }
+
+          const item = document.createElement('div');
+          item.className = 'quiz-legend-item';
+          item.innerHTML = `
+            <div class="quiz-color" style="background:${quizColors[index % quizColors.length]};"></div>
+            <div>
+              <div class="quiz-legend-name">${category.name}</div>
+              <div class="quiz-legend-value">${category.value}%</div>
+            </div>`;
+          quizLegend.appendChild(item);
         });
 
-        updateBudget();
+        updateQuiz();
       }
 
-      function resetQuiz() {
-        categories = initialCategories.map((item) => ({ ...item }));
-        renderBudgetList();
+      function updateQuiz() {
+        if (!quizBar || !quizLegend || !quizTotalPercent || !quizTotalAmount) return;
+
+        const totalPercent = quizCategories.reduce((sum, category) => sum + category.value, 0);
+        const totalAmount = Math.round((totalPercent / 100) * quizTotalAmountBase);
+        quizTotalPercent.textContent = `${totalPercent}% verteilt`;
+        quizTotalAmount.textContent = `${formatMoney(totalAmount)} gesamt`;
+
+        const segments = quizBar.querySelectorAll('.quiz-segment');
+        segments.forEach((segment, index) => {
+          const category = quizCategories[index];
+          segment.style.flex = `0 0 ${category.value}%`;
+          segment.textContent = `${category.name} ${category.value}%`;
+          segment.style.background = quizColors[index % quizColors.length];
+        });
+
+        const dividers = quizBar.querySelectorAll('.quiz-divider');
+        dividers.forEach((divider, index) => {
+          const leftPercent = quizCategories.slice(0, index + 1).reduce((sum, cat) => sum + cat.value, 0);
+          divider.style.left = `${leftPercent}%`;
+        });
+
+        const legendItems = quizLegend.querySelectorAll('.quiz-legend-item');
+        legendItems.forEach((item, index) => {
+          const category = quizCategories[index];
+          item.querySelector('.quiz-legend-name').textContent = category.name;
+          item.querySelector('.quiz-legend-value').textContent = `${category.value}%`;
+        });
       }
 
-      function openQuiz(event) {
+      function startDividerDrag(event) {
         event.preventDefault();
-        quizModal.classList.add('active');
-        quizModal.hidden = false;
-        renderBudgetList();
+        activeDivider = event.currentTarget;
+        activePointerId = event.pointerId;
+        quizBarRect = quizBar.getBoundingClientRect();
+        activeDivider.setPointerCapture(activePointerId);
       }
 
-      openQuizButtons.forEach((button) => {
-        button.addEventListener('click', openQuiz);
-      });
+      function onDragMove(event) {
+        if (!activeDivider || event.pointerId !== activePointerId) return;
+        const index = Number(activeDivider.dataset.index);
+        const pointerX = Math.max(0, Math.min(quizBarRect.width, event.clientX - quizBarRect.left));
+        const totalWidthPercent = quizCategories[index].value + quizCategories[index + 1].value;
+        const leftPriorPercent = quizCategories.slice(0, index).reduce((sum, category) => sum + category.value, 0);
+        const relativePercent = ((pointerX / quizBarRect.width) * 100 - leftPriorPercent) / totalWidthPercent;
+        const minValue = 5;
+        const newLeftValue = Math.round(Math.max(minValue, Math.min(totalWidthPercent - minValue, relativePercent * totalWidthPercent)));
 
-      closeQuiz.addEventListener('click', () => {
-        quizModal.classList.remove('active');
-        quizModal.hidden = true;
-      });
+        quizCategories[index].value = newLeftValue;
+        quizCategories[index + 1].value = totalWidthPercent - newLeftValue;
+        updateQuiz();
+      }
 
-      resetQuizButton.addEventListener('click', resetQuiz);
+      function stopDividerDrag(event) {
+        if (!activeDivider || event.pointerId !== activePointerId) return;
+        activeDivider.releasePointerCapture(activePointerId);
+        activeDivider = null;
+        activePointerId = null;
+        quizBarRect = null;
+      }
 
-      quizModal.addEventListener('click', (event) => {
-        if (event.target === quizModal) {
-          quizModal.classList.remove('active');
-          quizModal.hidden = true;
-        }
-      });
+      document.addEventListener('pointermove', onDragMove);
+      document.addEventListener('pointerup', stopDividerDrag);
+      document.addEventListener('pointercancel', stopDividerDrag);
 
-      document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && quizModal.classList.contains('active')) {
-          quizModal.classList.remove('active');
-          quizModal.hidden = true;
-        }
-      });
-
-      themeToggle.addEventListener('click', toggleTheme);
-      loadTheme();
-      renderBudgetList();
+      if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+      try { if (typeof loadTheme === 'function') loadTheme(); } catch (e) {}
+      renderQuiz();
 
       // Version / changelog fetch + secret modal
       const siteVersionBtn = document.getElementById('siteVersion');
@@ -1401,20 +1488,33 @@
       const versionChangeList = document.getElementById('versionChangeList');
 
       async function loadVersionInfo() {
-        try {
-          const res = await fetch('./version.json', { cache: 'no-store' });
-          if (!res.ok) throw new Error('no version');
-          const data = await res.json();
-          siteVersionNumber.textContent = data.version || '-';
-          versionChangeList.innerHTML = '';
-          (data.changes || []).slice(0, 3).forEach((c) => {
-            const li = document.createElement('li');
-            li.textContent = c;
-            versionChangeList.appendChild(li);
-          });
-        } catch (err) {
-          siteVersionNumber.textContent = '-';
+        const paths = ['./version.json', '/version.json', 'version.json'];
+        let data = null;
+        for (const p of paths) {
+          try {
+            const res = await fetch(p, { cache: 'no-store' });
+            if (!res.ok) continue;
+            data = await res.json();
+            break;
+          } catch (e) {
+            // try next
+          }
         }
+
+        if (!data) {
+          siteVersionNumber.textContent = 'offline';
+          versionChangeList.innerHTML = '<li>Versiondaten nicht verfügbar</li>';
+          siteVersionBtn.style.opacity = '0.7';
+          return;
+        }
+
+        siteVersionNumber.textContent = data.version || '-';
+        versionChangeList.innerHTML = '';
+        (data.changes || []).slice(0, 3).forEach((c) => {
+          const li = document.createElement('li');
+          li.textContent = c;
+          versionChangeList.appendChild(li);
+        });
       }
 
       if (siteVersionBtn && versionModal) {
