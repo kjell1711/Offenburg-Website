@@ -1033,17 +1033,18 @@
         visibility: hidden;
         pointer-events: none;
         transition: opacity 200ms ease, transform 200ms ease, visibility 200ms ease;
-        background: linear-gradient(135deg, rgba(78,162,255,0.95), rgba(95,176,255,0.95));
-        color: #ffffff;
-        padding: 0.75rem 1rem;
+        background: rgba(30,51,81,0.88);
+        border: 1px solid rgba(78,162,255,0.35);
+        color: var(--text-muted);
+        padding: 0.65rem 0.9rem;
         border-radius: 0.65rem;
-        font-size: 0.9rem;
-        max-width: 200px;
+        font-size: 0.85rem;
+        max-width: 180px;
         text-align: center;
         white-space: normal;
         z-index: 100;
-        box-shadow: 0 8px 24px rgba(78,162,255,0.3);
-        font-weight: normal;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        font-weight: 500;
       }
 
       .tooltip::after {
@@ -1052,8 +1053,8 @@
         top: 100%;
         left: 50%;
         transform: translateX(-50%);
-        border: 6px solid transparent;
-        border-top-color: rgba(78,162,255,0.95);
+        border: 5px solid transparent;
+        border-top-color: rgba(30,51,81,0.88);
       }
 
       .term:hover .tooltip {
@@ -1365,7 +1366,7 @@
         <div class="info-cards">
           <article class="info-card">
             <h3>Wo Geld herkommt</h3>
-            <p>Der Haushalt bekommt Geld aus <span class="term">Steuern<span class="tooltip">Geld, das Bürger bezahlen. Mit diesem Geld baut die Stadt Straßen, Schulen und vieles mehr.</span></span>, Gebühren und Zuschüssen vom Bund oder Land. Beispiele: Grundsteuer, Gewerbesteuer und Hundesteuer.</p>
+            <p>Der Haushalt bekommt Geld aus <span class="term">Steuern<span class="tooltip">Geld, das Bürger bezahlen. Mit diesem Geld baut die Stadt Straßen, Schulen und vieles mehr.</span></span>, Gebühren und Zuschüssen vom <span class="term">Bund<span class="tooltip">Der deutsche Staat unterstützt Städte bei großen Projekten.</span></span> oder Land. Beispiele: Grundsteuer, Gewerbesteuer und Hundesteuer.</p>
           </article>
           <article class="info-card">
             <h3>Wofür Geld ausgegeben wird</h3>
@@ -1636,10 +1637,13 @@
       <p><a href="#home">Zum Anfang</a></p>
     </footer>
 
-    <!-- very small version badge (bottom of page) -->
-    <div style="text-align:center; margin-top:8px;">
+    <!-- very small version badge & creators (bottom of page) -->
+    <div style="text-align:center; margin-top:8px; display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap;">
       <button id="siteVersion" title="Version anzeigen" style="border:0;background:transparent;color:var(--text-muted);font-size:10px;opacity:0.8;cursor:pointer;padding:6px 8px;">
         v<span id="siteVersionNumber">—</span>
+      </button>
+      <button id="creatorsBadge" title="Ersteller" style="border:0;background:transparent;color:var(--text-muted);font-size:10px;opacity:0.8;cursor:pointer;padding:6px 8px;">
+        Ersteller
       </button>
     </div>
 
@@ -1655,6 +1659,35 @@
         <div class="modal-body" id="versionModalBody">
           <p class="modal-note">Letzte Änderungen (aktualisiert nach jedem Commit)</p>
           <ul id="versionChangeList" style="margin:0; padding-left:1.1rem;"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- creators modal -->
+    <div class="modal-backdrop" id="creatorsModal" role="dialog" aria-modal="true" aria-labelledby="creatorsModalTitle">
+      <div class="modal-content" style="max-width: 420px;">
+        <div class="modal-header">
+          <h2 id="creatorsModalTitle" style="margin: 0; font-size: 1.4rem;">👥 Ersteller</h2>
+          <div class="modal-header-actions">
+            <button class="modal-close" id="closeCreatorsModal" aria-label="Schließen">✕</button>
+          </div>
+        </div>
+        <div class="modal-body" id="creatorsModalBody" style="padding: 1.5rem 0;">
+          <div style="display:grid; gap:0.8rem;">
+            <div style="padding:1rem; background:rgba(78,162,255,0.08); border:1px solid rgba(78,162,255,0.2); border-radius:0.85rem; text-align:center;">
+              <p style="margin:0; font-weight:600; color:var(--text);">Jenaro</p>
+            </div>
+            <div style="padding:1rem; background:rgba(78,162,255,0.08); border:1px solid rgba(78,162,255,0.2); border-radius:0.85rem; text-align:center;">
+              <p style="margin:0; font-weight:600; color:var(--text);">Youssef</p>
+            </div>
+            <div style="padding:1rem; background:rgba(78,162,255,0.08); border:1px solid rgba(78,162,255,0.2); border-radius:0.85rem; text-align:center;">
+              <p style="margin:0; font-weight:600; color:var(--text);">Julius</p>
+            </div>
+            <div style="padding:1rem; background:rgba(78,162,255,0.08); border:1px solid rgba(78,162,255,0.2); border-radius:0.85rem; text-align:center;">
+              <p style="margin:0; font-weight:600; color:var(--text);">Kjell</p>
+            </div>
+          </div>
+          <p style="margin-top:1.5rem; text-align:center; color:var(--text-muted); font-size:0.9rem; padding:0 0.5rem;">Danke für euer Engagement für dieses Bildungsprojekt! 🙏</p>
         </div>
       </div>
     </div>
@@ -2009,6 +2042,35 @@
 
       // initial load
       loadVersionInfo();
+
+      // Creators modal
+      const creatorsBadge = document.getElementById('creatorsBadge');
+      const creatorsModal = document.getElementById('creatorsModal');
+      const closeCreatorsModal = document.getElementById('closeCreatorsModal');
+
+      if (creatorsBadge && creatorsModal) {
+        creatorsBadge.addEventListener('click', () => {
+          creatorsModal.classList.add('active');
+        });
+
+        closeCreatorsModal.addEventListener('click', () => {
+          creatorsModal.classList.remove('active');
+        });
+
+        creatorsModal.addEventListener('click', (e) => {
+          if (e.target === creatorsModal) {
+            creatorsModal.classList.remove('active');
+          }
+        });
+      }
+
+      // Close modals on Escape
+      document.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape') {
+          if (versionModal) versionModal.classList.remove('active');
+          if (creatorsModal) creatorsModal.classList.remove('active');
+        }
+      });
     </script>
   </body>
 </html>
