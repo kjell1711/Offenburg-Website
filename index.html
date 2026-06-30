@@ -949,7 +949,7 @@
           <a href="#verwaltung">Abläufe</a>
           <a href="#transparenz">Transparenz</a>
           <a href="#kontakt">Kontakt</a>
-          <a class="button secondary" href="#" id="openQuiz">Quiz</a>
+          <!-- Quiz removed per request -->
         </div>
       </nav>
     </header>
@@ -964,7 +964,7 @@
             <div class="hero-actions">
               <a class="button primary" href="#haushalt">Was ist ein Haushalt?</a>
               <a class="button secondary" href="#transparenz">Warum das wichtig ist</a>
-              <a class="button secondary" href="#" id="openQuizHero">Quiz starten</a>
+              <!-- Quiz starten removed -->
             </div>
           </div>
         </div>
@@ -1134,31 +1134,30 @@
       <p><a href="#home">Zum Anfang</a></p>
     </footer>
 
-    <div class="modal-backdrop" id="quizModal" role="dialog" aria-modal="true" aria-labelledby="quizModalTitle" hidden>
+    <!-- very small version badge (bottom of page) -->
+    <div style="text-align:center; margin-top:8px;">
+      <button id="siteVersion" title="Version anzeigen" style="border:0;background:transparent;color:var(--text-muted);font-size:10px;opacity:0.8;cursor:pointer;padding:6px 8px;">
+        v<span id="siteVersionNumber">—</span>
+      </button>
+    </div>
+
+    <!-- secret version modal (shows last 3 changes) -->
+    <div class="modal-backdrop" id="versionModal" role="dialog" aria-modal="true" aria-labelledby="versionModalTitle">
       <div class="modal-content">
         <div class="modal-header">
-          <h2 id="quizModalTitle">Budget-Übung: Verteile 10 Mio €</h2>
+          <h2 id="versionModalTitle">Änderungen</h2>
           <div class="modal-header-actions">
-            <button class="button secondary" id="resetQuiz" type="button">Neu starten</button>
-            <button class="modal-close" id="closeQuiz" aria-label="Schließen">✕</button>
+            <button class="modal-close" id="closeVersionModal" aria-label="Schließen">✕</button>
           </div>
         </div>
-        <div class="modal-body">
-          <div class="budget-grid">
-            <div class="budget-info">
-              <p>Verteile 10 Mio € auf sechs wichtige Bereiche. Klick + oder - und sieh, wie viel Prozent des Budgets noch frei bleibt.</p>
-              <div class="budget-summary">
-                <strong>Budgetübersicht</strong>
-                <p id="totalPercent">0 % verwendet</p>
-                <p id="budgetLeft">Verbleibend: 100% · 10.000.000 €</p>
-              </div>
-              <p class="modal-note">Einfaches, klares Budget-Feature: Du kannst nicht mehr ausgeben als das vorhandene Gesamtbudget.</p>
-            </div>
-            <div class="budget-list" id="budgetList"></div>
-          </div>
+        <div class="modal-body" id="versionModalBody">
+          <p class="modal-note">Letzte Änderungen (aktualisiert nach jedem Commit)</p>
+          <ul id="versionChangeList" style="margin:0; padding-left:1.1rem;"></ul>
         </div>
       </div>
     </div>
+
+    <!-- quiz removed -->
 
     <script>
       const sections = document.querySelectorAll('.reveal');
@@ -1341,34 +1340,112 @@
         renderBudgetList();
       }
 
-      openQuizButtons.forEach((button) => {
-        button.addEventListener('click', openQuiz);
-      });
+      if (openQuizButtons && openQuizButtons.length) {
+        openQuizButtons.forEach((button) => button.addEventListener('click', openQuiz));
+      }
 
-      closeQuiz.addEventListener('click', () => {
-        quizModal.classList.remove('active');
-        quizModal.hidden = true;
-      });
+      if (closeQuiz) {
+        closeQuiz.addEventListener('click', () => {
+          if (quizModal) {
+            quizModal.classList.remove('active');
+            quizModal.hidden = true;
+          }
+        });
+      }
 
-      resetQuizButton.addEventListener('click', resetQuiz);
+      if (resetQuizButton) resetQuizButton.addEventListener('click', resetQuiz);
 
-      quizModal.addEventListener('click', (event) => {
-        if (event.target === quizModal) {
-          quizModal.classList.remove('active');
-          quizModal.hidden = true;
+      if (quizModal) {
+        quizModal.addEventListener('click', (event) => {
+          if (event.target === quizModal) {
+            quizModal.classList.remove('active');
+            quizModal.hidden = true;
+          }
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && quizModal.classList.contains('active')) {
+            quizModal.classList.remove('active');
+            quizModal.hidden = true;
+          }
+        });
+      }
+
+      if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+      try { if (typeof loadTheme === 'function') loadTheme(); } catch (e) {}
+      try { if (typeof renderBudgetList === 'function' && budgetList) renderBudgetList(); } catch (e) {}
+
+      // Version / changelog fetch + secret modal
+      const siteVersionBtn = document.getElementById('siteVersion');
+      const siteVersionNumber = document.getElementById('siteVersionNumber');
+      const versionModal = document.getElementById('versionModal');
+      const closeVersionModal = document.getElementById('closeVersionModal');
+      const versionChangeList = document.getElementById('versionChangeList');
+
+      async function loadVersionInfo() {
+        const paths = ['./version.json', '/version.json', 'version.json'];
+        let data = null;
+        for (const p of paths) {
+          try {
+            const res = await fetch(p, { cache: 'no-store' });
+            if (!res.ok) continue;
+            data = await res.json();
+            break;
+          } catch (e) {
+            // try next
+          }
+        }
+
+        if (!data) {
+          siteVersionNumber.textContent = 'offline';
+          versionChangeList.innerHTML = '<li>Versiondaten nicht verfügbar</li>';
+          siteVersionBtn.style.opacity = '0.7';
+          return;
+        }
+
+        siteVersionNumber.textContent = data.version || '-';
+        versionChangeList.innerHTML = '';
+        (data.changes || []).slice(0, 3).forEach((c) => {
+          const li = document.createElement('li');
+          li.textContent = c;
+          versionChangeList.appendChild(li);
+        });
+      }
+
+      if (siteVersionBtn && versionModal) {
+        siteVersionBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          versionModal.classList.add('active');
+          versionModal.hidden = false;
+        });
+
+        if (closeVersionModal) {
+          closeVersionModal.addEventListener('click', () => {
+            versionModal.classList.remove('active');
+            versionModal.hidden = true;
+          });
+        }
+
+        versionModal.addEventListener('click', (e) => {
+          if (e.target === versionModal) {
+            versionModal.classList.remove('active');
+            versionModal.hidden = true;
+          }
+        });
+      }
+
+      // keyboard close
+      document.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape') {
+          if (versionModal && versionModal.classList.contains('active')) {
+            versionModal.classList.remove('active');
+            versionModal.hidden = true;
+          }
         }
       });
 
-      document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && quizModal.classList.contains('active')) {
-          quizModal.classList.remove('active');
-          quizModal.hidden = true;
-        }
-      });
-
-      themeToggle.addEventListener('click', toggleTheme);
-      loadTheme();
-      renderBudgetList();
+      // initial load
+      loadVersionInfo();
     </script>
   </body>
 </html>
