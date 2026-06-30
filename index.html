@@ -37,7 +37,14 @@
           linear-gradient(180deg, #07101a 0%, #0f202f 48%, #07101a 100%);
         color: var(--text);
         line-height: 1.6;
-        transition: background 240ms ease, color 240ms ease, font-family 240ms ease;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 420ms ease, transform 420ms ease, background 240ms ease, color 240ms ease, font-family 240ms ease;
+      }
+
+      body.page-loaded {
+        opacity: 1;
+        transform: translateY(0);
       }
 
       body[data-theme='light'] {
@@ -159,6 +166,19 @@
         white-space: nowrap;
       }
 
+      .nav-left,
+      .navigation {
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 320ms ease, transform 320ms ease;
+      }
+
+      body.page-loaded .nav-left,
+      body.page-loaded .navigation {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
       .navigation {
         display: flex;
         gap: 0.75rem;
@@ -226,7 +246,25 @@
       .hero-copy {
         position: relative;
         z-index: 1;
-        animation: fadeUp 0.8s ease both;
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      body.page-loaded .hero-copy {
+        animation: heroFade 0.9s ease 0.2s forwards;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2rem;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      body.page-loaded .hero-actions {
+        animation: heroFade 0.7s ease 0.55s forwards;
       }
 
       .hero h1 {
@@ -325,10 +363,33 @@
         justify-content: center;
         padding: 1.5rem;
         z-index: 50;
+        opacity: 0;
+        transition: opacity 220ms ease;
       }
 
       .modal-backdrop.active {
         display: flex;
+        opacity: 1;
+      }
+
+      .modal-content {
+        width: min(920px, 100%);
+        max-height: 90vh;
+        overflow: auto;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 1.5rem;
+        box-shadow: var(--shadow);
+        position: relative;
+        padding: 1.75rem;
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+        transition: transform 260ms ease, opacity 260ms ease;
+      }
+
+      .modal-backdrop.active .modal-content {
+        opacity: 1;
+        transform: translateY(0) scale(1);
       }
 
       .modal-content {
@@ -846,6 +907,17 @@
         }
       }
 
+      @keyframes heroFade {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
       @keyframes fadeUp {
         from {
           opacity: 0;
@@ -1108,7 +1180,14 @@
         { threshold: 0.22 }
       );
 
-      sections.forEach((section) => observer.observe(section));
+      document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('page-loaded');
+      });
+
+      sections.forEach((section, index) => {
+        section.style.transitionDelay = `${index * 120}ms`;
+        observer.observe(section);
+      });
 
       const counters = document.querySelectorAll('[data-target]');
       const countObserver = new IntersectionObserver(
