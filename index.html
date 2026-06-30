@@ -1,51 +1,60 @@
 <!DOCTYPE html>
 <html lang="de">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stadt Offenburg</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kommunaler Haushalt</title>
     <style>
       :root {
-        --bg: #091b2b;
-        --surface: rgba(255, 255, 255, 0.08);
-        --surface-strong: rgba(255, 255, 255, 0.16);
-        --text: #f7f9fb;
-        --accent: #23a6f0;
-        --accent-soft: #4ab1ff;
-        --muted: #c3d6e8;
+        --page-bg: #f3f5f7;
+        --surface: #ffffff;
+        --surface-strong: #e8edf3;
+        --text: #1f2937;
+        --text-muted: #556575;
+        --primary: #0a4b8a;
+        --primary-soft: #1d6fc0;
+        --border: #d4dce6;
+        --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
       }
 
       * {
         box-sizing: border-box;
       }
 
-      html,
-      body {
-        margin: 0;
-        min-height: 100%;
-        font-family: 'Inter', system-ui, sans-serif;
-        color: var(--text);
-        background: radial-gradient(circle at top left, rgba(35, 166, 240, 0.18), transparent 35%),
-          linear-gradient(180deg, #07131f 0%, #0f2336 40%, #071421 100%);
+      html {
+        scroll-behavior: smooth;
       }
 
       body {
-        overflow-x: hidden;
+        margin: 0;
+        font-family: 'Inter', system-ui, sans-serif;
+        background: var(--page-bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at top left, rgba(10, 75, 138, 0.08), transparent 22%),
+          radial-gradient(circle at bottom right, rgba(29, 111, 192, 0.07), transparent 18%);
+        pointer-events: none;
       }
 
       header {
         position: sticky;
         top: 0;
-        z-index: 10;
-        backdrop-filter: blur(14px);
-        background: rgba(9, 27, 43, 0.83);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        z-index: 20;
+        background: rgba(243, 245, 247, 0.95);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: saturate(180%) blur(10px);
       }
 
       nav {
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
         gap: 1rem;
         max-width: 1200px;
         margin: 0 auto;
@@ -53,219 +62,344 @@
       }
 
       .brand {
-        display: inline-flex;
+        display: flex;
         align-items: center;
         gap: 0.75rem;
         font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
+        color: var(--primary);
       }
 
-      .brand span {
-        display: inline-block;
-        width: 0.75rem;
-        height: 0.75rem;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      .brand-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 0.35rem;
+        background: radial-gradient(circle, var(--primary), var(--primary-soft));
       }
 
-      nav a {
+      .navigation {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .navigation a {
         color: var(--text);
         text-decoration: none;
-        font-size: 0.95rem;
-        padding: 0.85rem 1.2rem;
-        border-radius: 999px;
-        transition: background 220ms ease, transform 220ms ease;
+        font-weight: 500;
+        padding: 0.8rem 1rem;
+        border-radius: 0.75rem;
+        transition: background 200ms ease, color 200ms ease;
       }
 
-      nav a:hover,
-      nav a:focus-visible {
-        background: rgba(255, 255, 255, 0.08);
-        transform: translateY(-1px);
+      .navigation a:hover,
+      .navigation a:focus-visible {
+        background: var(--primary-soft);
+        color: white;
+      }
+
+      main {
+        position: relative;
+        overflow: hidden;
       }
 
       .hero {
-        display: grid;
-        place-items: center;
-        min-height: calc(100vh - 80px);
-        padding: 2rem 1.5rem;
-        text-align: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 4.5rem 1.5rem 3rem;
       }
 
-      .hero-inner {
-        max-width: 960px;
+      .hero-grid {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: 1.2fr 0.8fr;
+        align-items: center;
+      }
+
+      .hero-copy {
+        animation: fadeUp 0.7s ease both;
       }
 
       .hero h1 {
         margin: 0;
-        font-size: clamp(2.75rem, 5vw, 5.2rem);
-        line-height: 1.03;
-        letter-spacing: -0.05em;
+        font-size: clamp(2.75rem, 5vw, 4.5rem);
+        line-height: 1.02;
+        color: var(--primary);
       }
 
       .hero p {
-        margin: 1.5rem auto 0;
         max-width: 720px;
-        color: var(--muted);
+        margin: 1.75rem 0 0;
+        color: var(--text-muted);
         font-size: 1.05rem;
-        line-height: 1.8;
       }
 
-      .hero .cta-group {
-        display: inline-flex;
+      .hero-actions {
+        display: flex;
         flex-wrap: wrap;
-        justify-content: center;
         gap: 1rem;
-        margin-top: 2.5rem;
+        margin-top: 2rem;
       }
 
-      .button {
+      .hero-actions a {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 170px;
-        padding: 0.95rem 1.6rem;
-        border: 1px solid transparent;
-        border-radius: 999px;
+        min-width: 160px;
+        padding: 0.95rem 1.5rem;
+        border-radius: 0.85rem;
         font-weight: 600;
-        cursor: pointer;
+        text-decoration: none;
+        border: 1px solid transparent;
         transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
       }
 
-      .button-primary {
-        background: linear-gradient(135deg, var(--accent), var(--accent-soft));
-        color: #08131f;
-        box-shadow: 0 18px 50px rgba(35, 166, 240, 0.16);
+      .hero-actions a.primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 18px 40px rgba(10, 75, 138, 0.18);
       }
 
-      .button-secondary {
-        background: rgba(255, 255, 255, 0.06);
-        color: var(--text);
+      .hero-actions a.secondary {
+        background: white;
+        color: var(--primary);
+        border-color: var(--border);
       }
 
-      .button:hover {
+      .hero-actions a:hover {
         transform: translateY(-2px);
       }
 
-      .section {
+      .hero-panel {
+        display: grid;
+        gap: 1.25rem;
+      }
+
+      .hero-panel .stat {
+        padding: 1.4rem 1.5rem;
+        border-radius: 1.25rem;
+        background: white;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        animation: fadeUp 0.7s ease both;
+      }
+
+      .hero-panel .stat strong {
+        display: block;
+        font-size: 2rem;
+        color: var(--primary);
+      }
+
+      .hero-panel .stat span {
+        color: var(--text-muted);
+      }
+
+      section {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 5rem 1.5rem;
+        padding: 4rem 1.5rem;
       }
 
-      .grid {
-        display: grid;
-        gap: 1.75rem;
-      }
-
-      .feature-cards {
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      }
-
-      .card {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 24px;
-        padding: 2rem;
-        min-height: 260px;
+      .section-intro {
         display: flex;
-        flex-direction: column;
+        justify-content: space-between;
         gap: 1rem;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+        animation: fadeUp 0.7s ease both;
+      }
+
+      .section-intro h2 {
+        margin: 0;
+        font-size: clamp(2rem, 3vw, 3rem);
+        line-height: 1.05;
+      }
+
+      .section-intro p {
+        max-width: 620px;
+        margin: 1rem 0 0;
+        color: var(--text-muted);
+      }
+
+      .info-cards {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
+
+      .info-card,
+      .news-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 1.5rem;
+        padding: 1.75rem;
+        box-shadow: var(--shadow);
         transition: transform 200ms ease, border-color 200ms ease;
       }
 
-      .card:hover {
-        transform: translateY(-6px);
-        border-color: rgba(35, 166, 240, 0.28);
+      .info-card:hover,
+      .news-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(10, 75, 138, 0.18);
       }
 
-      .card h3 {
-        margin: 0;
-        font-size: 1.25rem;
-      }
-
-      .card p {
-        margin: 0;
-        color: var(--muted);
-        line-height: 1.8;
-        flex: 1;
-      }
-
-      .info-panel {
-        display: grid;
-        gap: 2rem;
-        grid-template-columns: 1.45fr 1fr;
-        align-items: center;
-      }
-
-      .info-panel h2 {
+      .info-card h3,
+      .news-card h3 {
         margin-top: 0;
-        font-size: clamp(2rem, 3vw, 3rem);
+        margin-bottom: 1rem;
+        color: var(--primary);
       }
 
-      .info-panel p {
-        margin: 1.25rem 0 0;
-        color: var(--muted);
-        font-size: 1rem;
-        line-height: 1.8;
-      }
-
-      .highlight-box {
-        background: linear-gradient(180deg, rgba(35, 166, 240, 0.14), rgba(255, 255, 255, 0.04));
-        border-radius: 24px;
-        padding: 2rem;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      .highlight-box p {
+      .info-card p,
+      .news-card p {
         margin: 0;
-        color: var(--text);
+        color: var(--text-muted);
+      }
+
+      .service-list {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .service-item {
+        display: grid;
+        gap: 0.5rem;
+        padding: 1.5rem;
+        border-radius: 1.25rem;
+        background: white;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .service-item h3 {
+        margin: 0;
+        color: var(--primary);
+      }
+
+      .service-item p {
+        margin: 0;
+        color: var(--text-muted);
+      }
+
+      .facts {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        margin-top: 2rem;
+      }
+
+      .fact {
+        padding: 1.5rem;
+        border-radius: 1.25rem;
+        background: white;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .fact strong {
+        display: block;
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+        color: var(--primary);
+      }
+
+      .fact span {
+        color: var(--text-muted);
+      }
+
+      .news-grid {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+
+      .contact-grid {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: 1.3fr 0.7fr;
+      }
+
+      .contact-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 1.5rem;
+        padding: 1.75rem;
+        box-shadow: var(--shadow);
+      }
+
+      .contact-card h3 {
+        margin-top: 0;
+        color: var(--primary);
+      }
+
+      .contact-card p {
+        margin: 0.85rem 0 0;
+        color: var(--text-muted);
+      }
+
+      .contact-list {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0 0;
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .contact-list li {
+        display: grid;
+        gap: 0.25rem;
+      }
+
+      .contact-list strong {
+        color: var(--primary);
       }
 
       footer {
-        padding: 2.5rem 1.5rem;
+        padding: 2rem 1.5rem;
+        background: #ffffff;
+        border-top: 1px solid var(--border);
+        color: var(--text-muted);
         text-align: center;
-        color: rgba(255, 255, 255, 0.65);
-        border-top: 1px solid rgba(255, 255, 255, 0.06);
       }
 
-      .footer-links {
-        display: inline-flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin: 1rem auto 0;
-      }
-
-      .footer-links a {
-        color: rgba(255, 255, 255, 0.7);
+      footer a {
+        color: var(--primary);
         text-decoration: none;
-        font-size: 0.95rem;
       }
 
-      .footer-links a:hover {
-        color: var(--accent-soft);
-      }
-
-      @media (max-width: 860px) {
-        .info-panel {
+      @media (max-width: 960px) {
+        .hero-grid,
+        .contact-grid {
           grid-template-columns: 1fr;
+        }
+
+        .section-intro {
+          flex-direction: column;
         }
       }
 
-      @media (max-width: 620px) {
+      @media (max-width: 640px) {
         nav {
           flex-direction: column;
           align-items: flex-start;
         }
 
-        .hero {
-          min-height: auto;
-          padding-top: 3rem;
+        .navigation a {
+          padding: 0.65rem 0.9rem;
         }
 
-        .hero h1 {
-          font-size: 2.8rem;
+        .hero {
+          padding-top: 3rem;
+        }
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
       }
     </style>
@@ -274,77 +408,177 @@
     <header>
       <nav>
         <div class="brand">
-          <span></span>
-          Stadt Offenburg
+          <span class="brand-icon"></span>
+          Kommunaler Haushalt
         </div>
-        <div>
+        <div class="navigation">
           <a href="#home">Start</a>
-          <a href="#leistungen">Leistungen</a>
+          <a href="#haushalt">Haushalt</a>
+          <a href="#verwaltung">Verwaltung</a>
+          <a href="#transparenz">Transparenz</a>
           <a href="#kontakt">Kontakt</a>
         </div>
       </nav>
     </header>
 
-    <section class="hero" id="home">
-      <div class="hero-inner">
-        <h1>Offenburg digital erleben: modernes Design für deine Stadt.</h1>
-        <p>Eine ansprechende Website für Offenburg mit klaren Informationen, dynamischen Sektionen und einer Nutzeroberfläche, die Vertrauen schafft und neugierig macht.</p>
-        <div class="cta-group">
-          <a class="button button-primary" href="#leistungen">Mehr erfahren</a>
-          <a class="button button-secondary" href="#kontakt">Kontakt aufnehmen</a>
-        </div>
-      </div>
-    </section>
+    <main>
+      <section class="hero" id="home">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p style="margin:0;font-weight:600;color:var(--primary);letter-spacing:0.12em;text-transform:uppercase;">Kommunale Finanzen</p>
+            <h1>Wie kommunaler Haushalt funktioniert und welche Abläufe wichtig sind.</h1>
+            <p>Diese Informationsseite erklärt, wie eine Kommune ihre Mittel plant, einsetzt und kontrolliert. Hier geht es um Haushalt, Finanzen und Verwaltungsprozesse.</p>
+            <div class="hero-actions">
+              <a class="primary" href="#haushalt">Zum Haushalt</a>
+              <a class="secondary" href="#transparenz">Transparenz</a>
+            </div>
+          </div>
 
-    <section class="section" id="leistungen">
-      <div class="grid feature-cards">
-        <article class="card">
-          <h3>Starke Präsenz</h3>
-          <p>Eine visuell überzeugende Startseite mit Fokus auf Identität, Klarheit und emotionaler Ansprache, die Besucher sofort abholt.</p>
-        </article>
-        <article class="card">
-          <h3>Struktur und Übersicht</h3>
-          <p>Intuitive Navigation und klare Sektionen sorgen dafür, dass Inhalte schnell gefunden werden und die Seite professionell wirkt.</p>
-        </article>
-        <article class="card">
-          <h3>Responsive Darstellung</h3>
-          <p>Das Design passt sich flüssig an jedes Gerät an. So bleibt die Seite auf Desktop, Tablet und Smartphone gleichermaßen attraktiv.</p>
-        </article>
-      </div>
-    </section>
+          <div class="hero-panel">
+            <div class="stat">
+              <strong>3</strong>
+              <span>Haushaltsphasen</span>
+            </div>
+            <div class="stat">
+              <strong>5</strong>
+              <span>Bereiche der Finanzierung</span>
+            </div>
+            <div class="stat">
+              <strong>100%</strong>
+              <span>Verantwortung für öffentliche Mittel</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <section class="section">
-      <div class="info-panel">
-        <div>
-          <h2>Ein moderner Auftritt für die Stadt Offenburg</h2>
-          <p>Diese Seite wurde mit einem anspruchsvolleren Layout, weichen Gradienten, moderner Typografie und einer spannenden Struktur ausgestattet. Ziel ist es, die Wahrnehmung von Offenburg als moderne, lebendige Stadt zu stärken.</p>
+      <section id="haushalt">
+        <div class="section-intro">
+          <div>
+            <h2>Der kommunale Haushalt</h2>
+            <p>Der kommunale Haushalt ist der Finanzplan einer Gemeinde oder Stadt. Er definiert, wie Einnahmen für laufende Aufgaben und Investitionen eingesetzt werden.</p>
+          </div>
         </div>
-        <div class="highlight-box">
-          <p>Das Design kombiniert technische Raffinesse mit klarem Content. So entsteht ein Erlebnis, das sowohl informativ als auch visuell einladend ist.</p>
-        </div>
-      </div>
-    </section>
 
-    <section class="section" id="kontakt">
-      <div class="grid" style="grid-template-columns: minmax(0, 1fr); gap: 1.5rem;">
-        <div class="card" style="background: rgba(35, 166, 240, 0.08); border-color: rgba(35, 166, 240, 0.18);">
-          <h3>Kontakt</h3>
-          <p>Interessiert an einem besseren Webauftritt für Offenburg? Sende eine Nachricht und erfahre, wie wir die Website weiter ausbauen können.</p>
+        <div class="info-cards">
+          <article class="info-card">
+            <h3>Einnahmen</h3>
+            <p>Steuern, Gebühren, Fördermittel und Zuweisungen bilden die zentralen Einnahmequellen einer Kommune.</p>
+          </article>
+          <article class="info-card">
+            <h3>Ausgaben</h3>
+            <p>Ausgaben decken Verwaltung, Bildung, Soziales, Verkehr und Infrastruktur ab. Jeder Bereich wird im Haushalt beachtet.</p>
+          </article>
+          <article class="info-card">
+            <h3>Haushaltsausgleich</h3>
+            <p>Viele Haushalte streben einen ausgeglichenen Haushalt an. Steigende Ausgaben werden durch gezielte Planung und Priorisierung gesteuert.</p>
+          </article>
         </div>
-        <div class="card">
-          <h3>Weiterer Ausbau</h3>
-          <p>Zusätzliche Inhalte wie Veranstaltungskalender, Rathausinformationen oder interaktive Bürgerdienste lassen sich leicht ergänzen.</p>
+      </section>
+
+      <section id="verwaltung">
+        <div class="section-intro">
+          <div>
+            <h2>Verwaltungsabläufe</h2>
+            <p>Die Verwaltung bereitet den Haushalt vor, begleitet seine Umsetzung und organisiert die Kontrolle der Mittel.</p>
+          </div>
         </div>
-      </div>
-    </section>
+
+        <div class="service-list">
+          <div class="service-item">
+            <h3>Vorbereitung</h3>
+            <p>Fachämter ermitteln Bedarf, entwickeln Vorschläge und legen sie für die Haushaltsplanung vor.</p>
+          </div>
+          <div class="service-item">
+            <h3>Beratung</h3>
+            <p>Kommunale Gremien beraten den Haushaltsentwurf, prüfen Änderungen und entscheiden über den Beschluss.</p>
+          </div>
+          <div class="service-item">
+            <h3>Durchführung</h3>
+            <p>Nach Beschluss werden Mittel vergeben, Projekte umgesetzt und Ausgaben überwacht.</p>
+          </div>
+          <div class="service-item">
+            <h3>Kontrolle</h3>
+            <p>Prüfungen und Berichte zeigen, ob die Mittel wirtschaftlich und rechtlich korrekt verwendet wurden.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="transparenz">
+        <div class="section-intro">
+          <div>
+            <h2>Transparenz</h2>
+            <p>Haushaltspläne, Jahresabschlüsse und Prüfberichte sind wichtige Bausteine für öffentliches Vertrauen.</p>
+          </div>
+        </div>
+
+        <div class="facts">
+          <div class="fact">
+            <strong>Haushaltsplan</strong>
+            <span>Legt fest, welche Einnahmen und Ausgaben vorgesehen sind.</span>
+          </div>
+          <div class="fact">
+            <strong>Jahresabschluss</strong>
+            <span>Dokumentiert das Ergebnis der Haushaltsführung.</span>
+          </div>
+          <div class="fact">
+            <strong>Rechnungsprüfung</strong>
+            <span>Kontrolliert die Rechtmäßigkeit und Wirtschaftlichkeit.</span>
+          </div>
+          <div class="fact">
+            <strong>Öffentliche Information</strong>
+            <span>Berichte und Sitzungen sind häufig einsehbar.</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="aktuelles">
+        <div class="section-intro">
+          <div>
+            <h2>Typische Finanzthemen</h2>
+            <p>Diese Bereiche sind häufig Teil kommunaler Finanzdebatten und zeigen, wie Haushalt und Projekte zusammenhängen.</p>
+          </div>
+        </div>
+
+        <div class="news-grid">
+          <article class="news-card">
+            <h3>Investitionen</h3>
+            <p>Infrastrukturmaßnahmen, Bildung und öffentliche Einrichtungen werden langfristig finanziert.</p>
+          </article>
+          <article class="news-card">
+            <h3>Sozialhaushalt</h3>
+            <p>Soziale Leistungen und Unterstützungsangebote sind ein wichtiger Bestandteil der kommunalen Ausgaben.</p>
+          </article>
+          <article class="news-card">
+            <h3>Klimaschutz</h3>
+            <p>Haushalte planen zunehmend Mittel für Energieeffizienz und nachhaltige Mobilität.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="kontakt">
+        <div class="section-intro">
+          <div>
+            <h2>Kontakt und Hinweise</h2>
+            <p>Diese Webseite bietet allgemeine Informationen zum kommunalen Haushalt. Für konkrete Zahlen und Beschlüsse sind die offiziellen Veröffentlichungen der betreffenden Kommune maßgeblich.</p>
+          </div>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-card">
+            <h3>Mehr erfahren</h3>
+            <p>Haushaltspläne, Berichte und Sitzungsunterlagen werden häufig online veröffentlicht und sind die beste Grundlage für weitergehende Informationen.</p>
+          </div>
+          <div class="contact-card">
+            <h3>Ansprechpartner</h3>
+            <p>Typische Anlaufstellen sind kommunale Finanzverwaltungen, Rechnungsprüfungsämter und Haushaltsverantwortliche.</p>
+          </div>
+        </div>
+      </section>
+    </main>
 
     <footer>
-      <div>© 2026 Stadt Offenburg — Digitaler Auftritt</div>
-      <div class="footer-links">
-        <a href="#home">Top</a>
-        <a href="#leistungen">Leistungen</a>
-        <a href="#kontakt">Kontakt</a>
-      </div>
+      <p>Informationsseite zum kommunalen Haushalt. Keine offizielle Darstellung einer Stadtverwaltung.</p>
+      <p><a href="#home">Zum Anfang</a></p>
     </footer>
   </body>
 </html>
