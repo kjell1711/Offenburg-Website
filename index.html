@@ -35,6 +35,80 @@
         font-size: 2rem;
         color: #222;
       }
+      .posts-container {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+      }
+      .post {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        width: 300px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        text-align: left;
+      }
+      .post-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #004a94;
+        margin-bottom: 10px;
+      }
+      .post-content {
+        color: #555;
+        line-height: 1.5;
+        margin-bottom: 15px;
+      }
+      .post-content textarea {
+        width: 100%;
+        min-height: 80px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: Arial, sans-serif;
+        display: none;
+      }
+      .post-content textarea.editing {
+        display: block;
+      }
+      .post-content p.editing {
+        display: none;
+      }
+      .post-buttons {
+        display: flex;
+        gap: 10px;
+      }
+      .post-buttons button {
+        flex: 1;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .btn-edit {
+        background: #004a94;
+        color: white;
+      }
+      .btn-edit:hover {
+        background: #003366;
+      }
+      .btn-save {
+        background: #28a745;
+        color: white;
+      }
+      .btn-save:hover {
+        background: #218838;
+      }
+      .btn-cancel {
+        background: #dc3545;
+        color: white;
+      }
+      .btn-cancel:hover {
+        background: #c82333;
+      }
     </style>
   </head>
   <body>
@@ -48,4 +122,3 @@
     </main>
   </body>
 </html>
-
