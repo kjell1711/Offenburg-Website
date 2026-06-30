@@ -6,10 +6,14 @@
     <title>Kommunaler Haushalt</title>
     <style>
       :root {
+        --font-main: 'Inter', system-ui, sans-serif;
+        --font-alt: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
         --bg: #07101a;
         --surface: #101c2c;
         --surface-soft: #17263b;
         --surface-light: #1e3351;
+        --modal: rgba(12, 20, 31, 0.98);
+        --accent-bg: rgba(255, 255, 255, 0.08);
         --text: #edf2f7;
         --text-muted: #9fb5c9;
         --primary: #4ea2ff;
@@ -28,11 +32,41 @@
 
       body {
         margin: 0;
-        font-family: 'Inter', system-ui, sans-serif;
+        font-family: var(--font-main);
         background: radial-gradient(circle at top left, rgba(78, 162, 255, 0.12), transparent 18%),
           linear-gradient(180deg, #07101a 0%, #0f202f 48%, #07101a 100%);
         color: var(--text);
         line-height: 1.6;
+        transition: background 240ms ease, color 240ms ease, font-family 240ms ease;
+      }
+
+      body[data-theme='light'] {
+        --font-main: var(--font-alt);
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --surface-soft: #f2f5f8;
+        --surface-light: #e8eff7;
+        --modal: rgba(255, 255, 255, 0.94);
+        --accent-bg: rgba(16, 42, 67, 0.06);
+        --text: #102a43;
+        --text-muted: #52606d;
+        --primary: #3468f5;
+        --primary-strong: #547dff;
+        --border: rgba(16, 42, 67, 0.12);
+        --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+        background: radial-gradient(circle at top left, rgba(52, 104, 245, 0.1), transparent 18%),
+          linear-gradient(180deg, #ffffff 0%, #edf2f7 48%, #f8fafc 100%);
+      }
+
+      body[data-theme='light'] header {
+        background: rgba(255, 255, 255, 0.92);
+        border-bottom-color: var(--border);
+      }
+
+      body[data-theme='light'] .navigation a:hover,
+      body[data-theme='light'] .navigation a:focus-visible {
+        background: rgba(52, 104, 245, 0.14);
+        color: var(--text);
       }
 
       header {
@@ -67,6 +101,62 @@
         height: 1.25rem;
         border-radius: 0.35rem;
         background: linear-gradient(135deg, var(--primary), #2d7ef7);
+      }
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .theme-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 0.55rem 0.9rem;
+        background: var(--accent-bg);
+        color: var(--text);
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 220ms ease, background 220ms ease, border-color 220ms ease, color 220ms ease;
+      }
+
+      .theme-toggle:hover,
+      .theme-toggle:focus-visible {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      .theme-toggle-track {
+        width: 42px;
+        height: 22px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.14);
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .theme-toggle-thumb {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--text);
+        transition: left 260ms ease, background 260ms ease;
+      }
+
+      .theme-toggle.active .theme-toggle-thumb {
+        left: calc(100% - 20px);
+        background: var(--primary);
+      }
+
+      .theme-toggle-text {
+        font-size: 0.95rem;
+        white-space: nowrap;
       }
 
       .navigation {
@@ -179,9 +269,9 @@
       }
 
       .button.secondary {
-        background: rgba(255, 255, 255, 0.08);
+        background: var(--accent-bg);
         color: var(--text);
-        border-color: rgba(255, 255, 255, 0.12);
+        border-color: var(--border);
       }
 
       .button:hover {
@@ -245,8 +335,8 @@
         width: min(920px, 100%);
         max-height: 90vh;
         overflow: auto;
-        background: rgba(12, 20, 31, 0.98);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: var(--surface);
+        border: 1px solid var(--border);
         border-radius: 1.5rem;
         box-shadow: var(--shadow);
         position: relative;
@@ -289,15 +379,99 @@
         padding: 0.35rem;
       }
 
-      .quiz-grid {
+      .budget-grid {
         display: grid;
-        grid-template-columns: 1.05fr 0.95fr;
+        grid-template-columns: 1.1fr 0.9fr;
         gap: 1.5rem;
       }
 
-      .quiz-info {
+      .budget-info {
         display: grid;
         gap: 1rem;
+      }
+
+      .budget-list {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .budget-item {
+        background: var(--surface-soft);
+        border: 1px solid var(--border);
+        border-radius: 1.35rem;
+        padding: 1rem;
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .budget-item-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .budget-item-controls {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .control-button {
+        width: 48px;
+        min-width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--accent-bg);
+        color: var(--text);
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 220ms ease, transform 220ms ease, border-color 220ms ease;
+      }
+
+      .control-button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.16);
+      }
+
+      .control-button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .budget-progress {
+        width: 100%;
+        height: 0.9rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+
+      .budget-progress span {
+        display: block;
+        width: 0;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+        transition: width 260ms ease;
+      }
+
+      .modal-note {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      .chart-board {
+        width: 100%;
+        min-height: 360px;
+        display: grid;
+        gap: 1rem;
+        padding: 1.2rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 1.5rem;
+        overflow: auto;
       }
 
       .quiz-info p,
@@ -687,9 +861,15 @@
   <body>
     <header>
       <nav>
-        <div class="brand">
-          <span class="brand-icon"></span>
-          Kommunaler Haushalt Offenburg
+        <div class="nav-left">
+          <button class="theme-toggle" id="themeToggle" aria-label="Wechsel zu hellem Modus" type="button">
+            <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+            <span class="theme-toggle-text">Dark</span>
+          </button>
+          <div class="brand">
+            <span class="brand-icon"></span>
+            Kommunaler Haushalt Offenburg
+          </div>
         </div>
         <div class="navigation">
           <a href="#home">Start</a>
@@ -885,24 +1065,24 @@
     <div class="modal-backdrop" id="quizModal" role="dialog" aria-modal="true" aria-labelledby="quizModalTitle" hidden>
       <div class="modal-content">
         <div class="modal-header">
-          <h2 id="quizModalTitle">Haushalts-Quiz: Verteile 10 Mio €</h2>
+          <h2 id="quizModalTitle">Budget-Übung: Verteile 10 Mio €</h2>
           <div class="modal-header-actions">
             <button class="button secondary" id="resetQuiz" type="button">Neu starten</button>
             <button class="modal-close" id="closeQuiz" aria-label="Schließen">✕</button>
           </div>
         </div>
         <div class="modal-body">
-          <div class="quiz-grid">
-            <div class="quiz-info">
-              <p>Du hast 10 Millionen Euro zur Verfügung. Verteile das Geld auf die Bereiche, indem du die Balken mit dem Griff verschiebst. Jeder Balken zeigt Kategorie, Prozentanteil und den Betrag.</p>
+          <div class="budget-grid">
+            <div class="budget-info">
+              <p>Verteile 10 Mio € auf sechs wichtige Bereiche. Klick + oder - und sieh, wie viel Prozent des Budgets noch frei bleibt.</p>
               <div class="budget-summary">
                 <strong>Budgetübersicht</strong>
-                <p id="totalPercent">100 % verwendet</p>
-                <p id="budgetLeft">Verbleibend: 0% · 0 €</p>
+                <p id="totalPercent">0 % verwendet</p>
+                <p id="budgetLeft">Verbleibend: 100% · 10.000.000 €</p>
               </div>
-              <p class="modal-note">Ziehe den Griff am Ende eines Balkens. Die Gesamtverteilung kann nicht größer als das vorhandene Budget sein.</p>
+              <p class="modal-note">Einfaches, klares Budget-Feature: Du kannst nicht mehr ausgeben als das vorhandene Gesamtbudget.</p>
             </div>
-            <div class="chart-board" id="chartBoard"></div>
+            <div class="budget-list" id="budgetList"></div>
           </div>
         </div>
       </div>
@@ -960,140 +1140,126 @@
       const openQuizButtons = document.querySelectorAll('#openQuiz, #openQuizHero');
       const closeQuiz = document.getElementById('closeQuiz');
       const resetQuizButton = document.getElementById('resetQuiz');
-      const chartBoard = document.getElementById('chartBoard');
+      const budgetList = document.getElementById('budgetList');
       const totalPercent = document.getElementById('totalPercent');
       const budgetLeft = document.getElementById('budgetLeft');
+      const themeToggle = document.getElementById('themeToggle');
+      const themeText = themeToggle.querySelector('.theme-toggle-text');
+      const bodyElement = document.body;
       const budgetTotal = 10000000;
+      const themeKey = 'offenburgTheme';
 
       const initialCategories = [
-        { name: 'Schulen & Bildung', value: 10 },
-        { name: 'Freizeit & Sport', value: 10 },
-        { name: 'Öffentlicher Verkehr', value: 10 },
-        { name: 'Sicherheit & Notdienste', value: 10 },
-        { name: 'Umwelt & Grünflächen', value: 10 },
-        { name: 'Kultur & Jugendprojekte', value: 10 }
+        { name: 'Schulen & Bildung', value: 15 },
+        { name: 'Freizeit & Sport', value: 15 },
+        { name: 'Öffentlicher Verkehr', value: 15 },
+        { name: 'Sicherheit & Notdienste', value: 15 },
+        { name: 'Umwelt & Grünflächen', value: 15 },
+        { name: 'Kultur & Jugendprojekte', value: 15 }
       ];
 
       let categories = initialCategories.map((item) => ({ ...item }));
-
-      const colors = ['#4ea2ff', '#5fb0ff', '#7ed957', '#f1c33f', '#f86f6f', '#bb6cf7'];
 
       function formatMoney(amount) {
         return amount.toLocaleString('de-DE') + ' €';
       }
 
-      function barGradient(color) {
-        return `linear-gradient(135deg, ${color} 0%, ${color}CC 100%)`;
+      function applyTheme(theme) {
+        bodyElement.dataset.theme = theme;
+        const isLight = theme === 'light';
+        themeToggle.classList.toggle('active', isLight);
+        themeToggle.setAttribute('aria-label', isLight ? 'Wechsel zu dunklem Modus' : 'Wechsel zu hellem Modus');
+        themeText.textContent = isLight ? 'Light' : 'Dark';
       }
 
-      function updateChart() {
-        const totalPercentValue = categories.reduce((sum, category) => sum + category.value, 0);
-        const totalAmount = categories.reduce((sum, category) => sum + (category.value / 100) * budgetTotal, 0);
-        const remainingPercent = Math.max(0, 100 - totalPercentValue);
-        const remainingAmount = Math.round((remainingPercent / 100) * budgetTotal);
-        totalPercent.textContent = `${totalPercentValue}% verwendet`;
-        budgetLeft.textContent = `Verbleibend: ${remainingPercent}% · ${formatMoney(remainingAmount)}`;
+      function toggleTheme() {
+        const nextTheme = bodyElement.dataset.theme === 'light' ? 'dark' : 'light';
+        applyTheme(nextTheme);
+        try {
+          localStorage.setItem(themeKey, nextTheme);
+        } catch (error) {
+          // ignore storage errors
+        }
+      }
 
-        categories.forEach((category, index) => {
-          const bar = chartBoard.querySelector(`.bar-item[data-index="${index}"]`);
-          if (!bar) return;
-          const fill = bar.querySelector('.bar-fill');
-          const handle = bar.querySelector('.bar-handle');
-          const valueLabel = bar.querySelector('.bar-value');
-          const amount = (category.value / 100) * budgetTotal;
-          const width = Math.min(100, Math.max(0, category.value));
-          fill.style.width = `${width}%`;
-          handle.style.left = `calc(${width}% - 9px)`;
-          valueLabel.textContent = `${category.value}% · ${formatMoney(amount)}`;
-        });
+      function loadTheme() {
+        const storedTheme = localStorage.getItem(themeKey);
+        applyTheme(storedTheme === 'light' ? 'light' : 'dark');
       }
 
       function clampCategoryValue(index, value) {
-        const otherTotal = categories.reduce((sum, category, idx) => idx === index ? sum : sum + category.value, 0);
+        const otherTotal = categories.reduce((sum, category, idx) => (idx === index ? sum : sum + category.value), 0);
         return Math.max(0, Math.min(value, Math.max(0, 100 - otherTotal)));
       }
 
-      function renderBars() {
-        chartBoard.innerHTML = `
-          <div class="bar-list">
-            ${categories
-              .map((category, index) => {
-                const width = Math.min(100, Math.max(0, category.value));
-                return `<div class="bar-item" data-index="${index}">
-                    <div class="bar-top">
-                      <div class="bar-name">${category.name}</div>
-                      <div class="bar-value">${category.value}% · ${formatMoney((category.value / 100) * budgetTotal)}</div>
-                    </div>
-                    <div class="bar-track" data-index="${index}" aria-label="Verteilung für ${category.name}">
-                      <div class="bar-fill" style="width: ${width}%; background: ${barGradient(colors[index])};"></div>
-                      <div class="bar-handle" data-index="${index}" style="left: calc(${width}% - 9px);"></div>
-                    </div>
-                  </div>`;
-              })
-              .join('')}
-          </div>`;
+      function updateBudget() {
+        const totalPercentValue = categories.reduce((sum, category) => sum + category.value, 0);
+        const remainingPercent = Math.max(0, 100 - totalPercentValue);
+        const remainingAmount = Math.round((remainingPercent / 100) * budgetTotal);
 
-        chartBoard.querySelectorAll('.bar-track').forEach((track) => {
-          track.addEventListener('click', handleTrackClick);
+        totalPercent.textContent = `${totalPercentValue}% verwendet`;
+        budgetLeft.textContent = `Verbleibend: ${remainingPercent}% · ${formatMoney(remainingAmount)}`;
+
+        budgetList.querySelectorAll('.budget-item').forEach((item, index) => {
+          const valueLabel = item.querySelector('.bar-value');
+          const progress = item.querySelector('.budget-progress span');
+          const value = categories[index].value;
+          valueLabel.textContent = `${value}%`;
+          progress.style.width = `${value}%`;
         });
 
-        chartBoard.querySelectorAll('.bar-handle').forEach((handle) => {
-          handle.addEventListener('pointerdown', startBarDrag);
+        budgetList.querySelectorAll('[data-action="increase"]').forEach((button) => {
+          const index = Number(button.dataset.index);
+          button.disabled = remainingPercent <= 0 || categories[index].value >= 100;
+        });
+
+        budgetList.querySelectorAll('[data-action="decrease"]').forEach((button) => {
+          const index = Number(button.dataset.index);
+          button.disabled = categories[index].value <= 0;
         });
       }
 
-      let activeBarIndex = null;
-      let currentTrackRect = null;
+      function renderBudgetList() {
+        budgetList.innerHTML = categories
+          .map(
+            (category, index) => `
+              <div class="budget-item" data-index="${index}">
+                <div class="budget-item-top">
+                  <div class="bar-name">${category.name}</div>
+                  <div class="bar-value">${category.value}%</div>
+                </div>
+                <div class="budget-item-controls">
+                  <button class="control-button" data-index="${index}" data-action="decrease" type="button">-</button>
+                  <button class="control-button" data-index="${index}" data-action="increase" type="button">+</button>
+                </div>
+                <div class="budget-progress"><span style="width: ${category.value}%;"></span></div>
+              </div>`
+          )
+          .join('');
 
-      function startBarDrag(event) {
-        event.preventDefault();
-        activeBarIndex = Number(event.currentTarget.dataset.index);
-        const track = event.currentTarget.closest('.bar-track');
-        currentTrackRect = track.getBoundingClientRect();
-        event.currentTarget.setPointerCapture(event.pointerId);
-      }
+        budgetList.querySelectorAll('.control-button').forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const index = Number(event.currentTarget.dataset.index);
+            const delta = event.currentTarget.dataset.action === 'increase' ? 5 : -5;
+            categories[index].value = clampCategoryValue(index, categories[index].value + delta);
+            renderBudgetList();
+            updateBudget();
+          });
+        });
 
-      function handleTrackClick(event) {
-        const track = event.currentTarget;
-        const index = Number(track.dataset.index);
-        const x = event.offsetX;
-        const percent = Math.round((x / track.clientWidth) * 100);
-        categories[index].value = clampCategoryValue(index, percent);
-        updateChart();
-      }
-
-      function dragBar(event) {
-        if (activeBarIndex === null || !currentTrackRect) return;
-        const x = event.clientX - currentTrackRect.left;
-        const percent = Math.round((x / currentTrackRect.width) * 100);
-        categories[activeBarIndex].value = clampCategoryValue(activeBarIndex, percent);
-        updateChart();
-      }
-
-
-
-      function stopBarDrag(event) {
-        if (activeBarIndex === null) return;
-        const handle = document.querySelector(`.bar-handle[data-index="${activeBarIndex}"]`);
-        if (handle && event.pointerId != null) {
-          handle.releasePointerCapture(event.pointerId);
-        }
-        activeBarIndex = null;
-        currentTrackRect = null;
+        updateBudget();
       }
 
       function resetQuiz() {
         categories = initialCategories.map((item) => ({ ...item }));
-        renderBars();
-        updateChart();
+        renderBudgetList();
       }
 
       function openQuiz(event) {
         event.preventDefault();
         quizModal.classList.add('active');
         quizModal.hidden = false;
-        renderBars();
-        updateChart();
+        renderBudgetList();
       }
 
       openQuizButtons.forEach((button) => {
@@ -1114,9 +1280,6 @@
         }
       });
 
-      document.addEventListener('pointermove', dragBar);
-      document.addEventListener('pointerup', stopBarDrag);
-
       document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && quizModal.classList.contains('active')) {
           quizModal.classList.remove('active');
@@ -1124,7 +1287,9 @@
         }
       });
 
-      updateChart();
+      themeToggle.addEventListener('click', toggleTheme);
+      loadTheme();
+      renderBudgetList();
     </script>
   </body>
 </html>
