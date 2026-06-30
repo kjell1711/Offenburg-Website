@@ -6,15 +6,16 @@
     <title>Kommunaler Haushalt</title>
     <style>
       :root {
-        --page-bg: #f3f5f7;
-        --surface: #ffffff;
-        --surface-strong: #e8edf3;
-        --text: #1f2937;
-        --text-muted: #556575;
-        --primary: #0a4b8a;
-        --primary-soft: #1d6fc0;
-        --border: #d4dce6;
-        --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+        --bg: #07101a;
+        --surface: #101c2c;
+        --surface-soft: #17263b;
+        --surface-light: #1e3351;
+        --text: #edf2f7;
+        --text-muted: #9fb5c9;
+        --primary: #4ea2ff;
+        --primary-strong: #5fb0ff;
+        --border: rgba(255, 255, 255, 0.08);
+        --shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
       }
 
       * {
@@ -28,25 +29,17 @@
       body {
         margin: 0;
         font-family: 'Inter', system-ui, sans-serif;
-        background: var(--page-bg);
+        background: radial-gradient(circle at top left, rgba(78, 162, 255, 0.12), transparent 18%),
+          linear-gradient(180deg, #07101a 0%, #0f202f 48%, #07101a 100%);
         color: var(--text);
         line-height: 1.6;
-      }
-
-      body::before {
-        content: '';
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(circle at top left, rgba(10, 75, 138, 0.08), transparent 22%),
-          radial-gradient(circle at bottom right, rgba(29, 111, 192, 0.07), transparent 18%);
-        pointer-events: none;
       }
 
       header {
         position: sticky;
         top: 0;
         z-index: 20;
-        background: rgba(243, 245, 247, 0.95);
+        background: rgba(8, 17, 29, 0.96);
         border-bottom: 1px solid var(--border);
         backdrop-filter: saturate(180%) blur(10px);
       }
@@ -73,12 +66,12 @@
         width: 1.25rem;
         height: 1.25rem;
         border-radius: 0.35rem;
-        background: radial-gradient(circle, var(--primary), var(--primary-soft));
+        background: linear-gradient(135deg, var(--primary), #2d7ef7);
       }
 
       .navigation {
         display: flex;
-        gap: 1rem;
+        gap: 0.75rem;
         flex-wrap: wrap;
       }
 
@@ -87,13 +80,14 @@
         text-decoration: none;
         font-weight: 500;
         padding: 0.8rem 1rem;
-        border-radius: 0.75rem;
-        transition: background 200ms ease, color 200ms ease;
+        border-radius: 0.85rem;
+        transition: background 220ms ease, transform 220ms ease, color 220ms ease;
       }
 
       .navigation a:hover,
       .navigation a:focus-visible {
-        background: var(--primary-soft);
+        background: rgba(78, 162, 255, 0.18);
+        transform: translateY(-1px);
         color: white;
       }
 
@@ -123,7 +117,7 @@
         margin: 0;
         font-size: clamp(2.75rem, 5vw, 4.5rem);
         line-height: 1.02;
-        color: var(--primary);
+        color: var(--text);
       }
 
       .hero p {
@@ -150,19 +144,19 @@
         font-weight: 600;
         text-decoration: none;
         border: 1px solid transparent;
-        transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+        transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
       }
 
       .hero-actions a.primary {
-        background: var(--primary);
-        color: white;
-        box-shadow: 0 18px 40px rgba(10, 75, 138, 0.18);
+        background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+        color: #07101a;
+        box-shadow: 0 18px 40px rgba(78, 162, 255, 0.2);
       }
 
       .hero-actions a.secondary {
-        background: white;
-        color: var(--primary);
-        border-color: var(--border);
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text);
+        border-color: rgba(255, 255, 255, 0.08);
       }
 
       .hero-actions a:hover {
@@ -177,8 +171,8 @@
       .hero-panel .stat {
         padding: 1.4rem 1.5rem;
         border-radius: 1.25rem;
-        background: white;
-        border: 1px solid var(--border);
+        background: #112136;
+        border: 1px solid rgba(255, 255, 255, 0.05);
         box-shadow: var(--shadow);
         animation: fadeUp 0.7s ease both;
       }
@@ -197,6 +191,14 @@
         max-width: 1200px;
         margin: 0 auto;
         padding: 4rem 1.5rem;
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      section.visible {
+        opacity: 1;
+        transform: translateY(0);
       }
 
       .section-intro {
@@ -205,13 +207,13 @@
         gap: 1rem;
         align-items: flex-start;
         margin-bottom: 2rem;
-        animation: fadeUp 0.7s ease both;
       }
 
       .section-intro h2 {
         margin: 0;
         font-size: clamp(2rem, 3vw, 3rem);
         line-height: 1.05;
+        color: var(--text);
       }
 
       .section-intro p {
@@ -220,120 +222,74 @@
         color: var(--text-muted);
       }
 
-      .info-cards {
+      .info-cards,
+      .news-grid,
+      .contact-grid,
+      .facts,
+      .service-list {
         display: grid;
         gap: 1.5rem;
+      }
+
+      .info-cards,
+      .news-grid {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       }
 
-      .info-card,
-      .news-card {
-        background: white;
-        border: 1px solid var(--border);
-        border-radius: 1.5rem;
-        padding: 1.75rem;
-        box-shadow: var(--shadow);
-        transition: transform 200ms ease, border-color 200ms ease;
-      }
-
-      .info-card:hover,
-      .news-card:hover {
-        transform: translateY(-4px);
-        border-color: rgba(10, 75, 138, 0.18);
-      }
-
-      .info-card h3,
-      .news-card h3 {
-        margin-top: 0;
-        margin-bottom: 1rem;
-        color: var(--primary);
-      }
-
-      .info-card p,
-      .news-card p {
-        margin: 0;
-        color: var(--text-muted);
-      }
-
       .service-list {
-        display: grid;
-        gap: 1rem;
-      }
-
-      .service-item {
-        display: grid;
-        gap: 0.5rem;
-        padding: 1.5rem;
-        border-radius: 1.25rem;
-        background: white;
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
-      }
-
-      .service-item h3 {
-        margin: 0;
-        color: var(--primary);
-      }
-
-      .service-item p {
-        margin: 0;
-        color: var(--text-muted);
+        grid-template-columns: 1fr;
       }
 
       .facts {
-        display: grid;
-        gap: 1rem;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         margin-top: 2rem;
       }
 
-      .fact {
-        padding: 1.5rem;
-        border-radius: 1.25rem;
-        background: white;
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
-      }
-
-      .fact strong {
-        display: block;
-        font-size: 2rem;
-        margin-bottom: 0.75rem;
-        color: var(--primary);
-      }
-
-      .fact span {
-        color: var(--text-muted);
-      }
-
-      .news-grid {
-        display: grid;
-        gap: 1.5rem;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      }
-
       .contact-grid {
-        display: grid;
-        gap: 1.5rem;
         grid-template-columns: 1.3fr 0.7fr;
       }
 
+      .info-card,
+      .news-card,
+      .service-item,
+      .fact,
       .contact-card {
-        background: white;
+        background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 1.5rem;
         padding: 1.75rem;
         box-shadow: var(--shadow);
+        transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
       }
 
-      .contact-card h3 {
-        margin-top: 0;
+      .info-card:hover,
+      .news-card:hover,
+      .service-item:hover,
+      .fact:hover,
+      .contact-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(78, 162, 255, 0.18);
+        background: var(--surface-soft);
+      }
+
+      .info-card h3,
+      .news-card h3,
+      .service-item h3,
+      .contact-card h3,
+      .fact strong {
         color: var(--primary);
       }
 
-      .contact-card p {
-        margin: 0.85rem 0 0;
+      .info-card p,
+      .news-card p,
+      .service-item p,
+      .contact-card p,
+      .fact span {
         color: var(--text-muted);
+      }
+
+      .service-item {
+        background: var(--surface);
       }
 
       .contact-list {
@@ -355,9 +311,9 @@
 
       footer {
         padding: 2rem 1.5rem;
-        background: #ffffff;
+        background: #0c141f;
         border-top: 1px solid var(--border);
-        color: var(--text-muted);
+        color: #a6b8d6;
         text-align: center;
       }
 
@@ -409,12 +365,12 @@
       <nav>
         <div class="brand">
           <span class="brand-icon"></span>
-          Kommunaler Haushalt
+          Kommunaler Haushalt Offenburg
         </div>
         <div class="navigation">
           <a href="#home">Start</a>
           <a href="#haushalt">Haushalt</a>
-          <a href="#verwaltung">Verwaltung</a>
+          <a href="#verwaltung">Abläufe</a>
           <a href="#transparenz">Transparenz</a>
           <a href="#kontakt">Kontakt</a>
         </div>
@@ -422,164 +378,186 @@
     </header>
 
     <main>
-      <section class="hero" id="home">
+      <section class="hero visible" id="home">
         <div class="hero-grid">
           <div class="hero-copy">
-            <p style="margin:0;font-weight:600;color:var(--primary);letter-spacing:0.12em;text-transform:uppercase;">Kommunale Finanzen</p>
-            <h1>Wie kommunaler Haushalt funktioniert und welche Abläufe wichtig sind.</h1>
-            <p>Diese Informationsseite erklärt, wie eine Kommune ihre Mittel plant, einsetzt und kontrolliert. Hier geht es um Haushalt, Finanzen und Verwaltungsprozesse.</p>
+            <p style="margin:0;font-weight:600;color:var(--primary);letter-spacing:0.12em;text-transform:uppercase;">Offenburg Haushalt</p>
+            <h1>Ein Einstieg in den kommunalen Haushalt und seine Wirkungen.</h1>
+            <p>Hier geht es um die grundlegenden Aufgaben der Haushaltsplanung in einer Kommune wie Offenburg. Der Fokus liegt auf Einnahmen, Ausgaben und den Prozessen, die für den Haushalt verantwortlich sind.</p>
             <div class="hero-actions">
-              <a class="primary" href="#haushalt">Zum Haushalt</a>
+              <a class="primary" href="#haushalt">Haushaltsübersicht</a>
               <a class="secondary" href="#transparenz">Transparenz</a>
             </div>
           </div>
 
           <div class="hero-panel">
             <div class="stat">
-              <strong>3</strong>
+              <strong>4</strong>
               <span>Haushaltsphasen</span>
             </div>
             <div class="stat">
-              <strong>5</strong>
-              <span>Bereiche der Finanzierung</span>
+              <strong>7</strong>
+              <span>Bereiche des Haushalts</span>
             </div>
             <div class="stat">
-              <strong>100%</strong>
-              <span>Verantwortung für öffentliche Mittel</span>
+              <strong>1</strong>
+              <span>Gemeinsamer Rahmen für Entscheidungen</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="haushalt">
+      <section id="haushalt" class="reveal">
         <div class="section-intro">
           <div>
-            <h2>Der kommunale Haushalt</h2>
-            <p>Der kommunale Haushalt ist der Finanzplan einer Gemeinde oder Stadt. Er definiert, wie Einnahmen für laufende Aufgaben und Investitionen eingesetzt werden.</p>
+            <h2>Haushaltsstruktur</h2>
+            <p>Der Haushalt einer Stadt umfasst Einnahmen und Ausgaben. Er zeigt, wie Mittel auf Leistungen verteilt werden und welche Prioritäten festgelegt sind.</p>
           </div>
         </div>
 
         <div class="info-cards">
           <article class="info-card">
             <h3>Einnahmen</h3>
-            <p>Steuern, Gebühren, Fördermittel und Zuweisungen bilden die zentralen Einnahmequellen einer Kommune.</p>
+            <p>Steuern, Gebühren, Zuweisungen und Fördermittel liefern die Grundlage für den kommunalen Haushalt.</p>
           </article>
           <article class="info-card">
             <h3>Ausgaben</h3>
-            <p>Ausgaben decken Verwaltung, Bildung, Soziales, Verkehr und Infrastruktur ab. Jeder Bereich wird im Haushalt beachtet.</p>
+            <p>Ausgaben werden für Verwaltung, Schulen, Soziales, Verkehr, Umwelt und Kultur geplant.</p>
           </article>
           <article class="info-card">
-            <h3>Haushaltsausgleich</h3>
-            <p>Viele Haushalte streben einen ausgeglichenen Haushalt an. Steigende Ausgaben werden durch gezielte Planung und Priorisierung gesteuert.</p>
+            <h3>Planung</h3>
+            <p>Die Haushaltsplanung erfolgt jährlich und berücksichtigt aktuelle Bedarfe sowie langfristige Verpflichtungen.</p>
           </article>
         </div>
       </section>
 
-      <section id="verwaltung">
+      <section id="verwaltung" class="reveal">
         <div class="section-intro">
           <div>
-            <h2>Verwaltungsabläufe</h2>
-            <p>Die Verwaltung bereitet den Haushalt vor, begleitet seine Umsetzung und organisiert die Kontrolle der Mittel.</p>
+            <h2>Abläufe und Zuständigkeiten</h2>
+            <p>Die Verwaltung bereitet die Zahlen auf, politische Gremien beraten den Entwurf, und die Haushaltsführung sorgt für die Umsetzung.</p>
           </div>
         </div>
 
         <div class="service-list">
           <div class="service-item">
             <h3>Vorbereitung</h3>
-            <p>Fachämter ermitteln Bedarf, entwickeln Vorschläge und legen sie für die Haushaltsplanung vor.</p>
+            <p>Fachämter sammeln Bedarfe, erstellen Vorschläge und bilden damit die Basis des Haushaltsentwurfs.</p>
           </div>
           <div class="service-item">
             <h3>Beratung</h3>
-            <p>Kommunale Gremien beraten den Haushaltsentwurf, prüfen Änderungen und entscheiden über den Beschluss.</p>
+            <p>Der Entwurf wird in Ausschüssen und Ratssitzungen diskutiert. Änderungen sowie Ergänzungen werden dabei abgestimmt.</p>
           </div>
           <div class="service-item">
-            <h3>Durchführung</h3>
-            <p>Nach Beschluss werden Mittel vergeben, Projekte umgesetzt und Ausgaben überwacht.</p>
+            <h3>Beschluss</h3>
+            <p>Nach der Beratung beschließt der Rat den Haushalt, der dann die Grundlage für das kommende Jahr bildet.</p>
+          </div>
+          <div class="service-item">
+            <h3>Ausführung</h3>
+            <p>Die bereitgestellten Mittel werden ausgegeben, Projekte umgesetzt und laufende Leistungen finanziert.</p>
           </div>
           <div class="service-item">
             <h3>Kontrolle</h3>
-            <p>Prüfungen und Berichte zeigen, ob die Mittel wirtschaftlich und rechtlich korrekt verwendet wurden.</p>
+            <p>Berichte und Prüfungen analysieren, ob Ausgaben korrekt und wirtschaftlich angelegt waren.</p>
           </div>
         </div>
       </section>
 
-      <section id="transparenz">
+      <section id="transparenz" class="reveal">
         <div class="section-intro">
           <div>
-            <h2>Transparenz</h2>
-            <p>Haushaltspläne, Jahresabschlüsse und Prüfberichte sind wichtige Bausteine für öffentliches Vertrauen.</p>
+            <h2>Transparenz und Rechenschaft</h2>
+            <p>Offene Informationen zu Haushaltsplänen und Jahresabschlüssen sind wichtig, damit Bürgerinnen und Bürger nachvollziehen können, wie Mittel eingesetzt werden.</p>
           </div>
         </div>
 
         <div class="facts">
           <div class="fact">
             <strong>Haushaltsplan</strong>
-            <span>Legt fest, welche Einnahmen und Ausgaben vorgesehen sind.</span>
+            <span>Vorlage für alle geplanten Einnahmen und Ausgaben.</span>
           </div>
           <div class="fact">
             <strong>Jahresabschluss</strong>
-            <span>Dokumentiert das Ergebnis der Haushaltsführung.</span>
+            <span>Vergleicht Plan und tatsächliche Ergebnisse.</span>
           </div>
           <div class="fact">
-            <strong>Rechnungsprüfung</strong>
-            <span>Kontrolliert die Rechtmäßigkeit und Wirtschaftlichkeit.</span>
+            <strong>Prüfbericht</strong>
+            <span>Bewertet Rechtmäßigkeit und Wirtschaftlichkeit der Haushaltsführung.</span>
           </div>
           <div class="fact">
-            <strong>Öffentliche Information</strong>
-            <span>Berichte und Sitzungen sind häufig einsehbar.</span>
+            <strong>Öffentlichkeit</strong>
+            <span>Berichte und Sitzungen sind oft öffentlich einsehbar.</span>
           </div>
         </div>
       </section>
 
-      <section id="aktuelles">
+      <section id="themen" class="reveal">
         <div class="section-intro">
           <div>
-            <h2>Typische Finanzthemen</h2>
-            <p>Diese Bereiche sind häufig Teil kommunaler Finanzdebatten und zeigen, wie Haushalt und Projekte zusammenhängen.</p>
+            <h2>Schwerpunkte im Haushalt</h2>
+            <p>Die Finanzplanung einer Kommune enthält Schwerpunkte, die sich aus lokalen Anforderungen und strategischen Zielen ergeben.</p>
           </div>
         </div>
 
         <div class="news-grid">
           <article class="news-card">
-            <h3>Investitionen</h3>
-            <p>Infrastrukturmaßnahmen, Bildung und öffentliche Einrichtungen werden langfristig finanziert.</p>
+            <h3>Infrastruktur</h3>
+            <p>Investitionen in Straßen, Gebäude und öffentliche Anlagen sind langfristig angelegt und Teil des jährlichen Haushalts.</p>
           </article>
           <article class="news-card">
-            <h3>Sozialhaushalt</h3>
-            <p>Soziale Leistungen und Unterstützungsangebote sind ein wichtiger Bestandteil der kommunalen Ausgaben.</p>
+            <h3>Soziale Leistungen</h3>
+            <p>Ausgaben für Jugendhilfe, Soziales und Seniorenangebote sind zentrale Posten in der kommunalen Planung.</p>
           </article>
           <article class="news-card">
             <h3>Klimaschutz</h3>
-            <p>Haushalte planen zunehmend Mittel für Energieeffizienz und nachhaltige Mobilität.</p>
+            <p>Budgetpositionen für Energieeffizienz, Mobilität und Nachhaltigkeit gewinnen in der Haushaltsplanung an Bedeutung.</p>
           </article>
         </div>
       </section>
 
-      <section id="kontakt">
+      <section id="kontakt" class="reveal">
         <div class="section-intro">
           <div>
-            <h2>Kontakt und Hinweise</h2>
-            <p>Diese Webseite bietet allgemeine Informationen zum kommunalen Haushalt. Für konkrete Zahlen und Beschlüsse sind die offiziellen Veröffentlichungen der betreffenden Kommune maßgeblich.</p>
+            <h2>Hinweise und Quellen</h2>
+            <p>Diese Seite bietet allgemeine Informationen zum kommunalen Haushalt. Für genaue Zahlen und Beschlüsse gelten die offiziellen Dokumente der jeweiligen Kommune.</p>
           </div>
         </div>
 
         <div class="contact-grid">
           <div class="contact-card">
-            <h3>Mehr erfahren</h3>
-            <p>Haushaltspläne, Berichte und Sitzungsunterlagen werden häufig online veröffentlicht und sind die beste Grundlage für weitergehende Informationen.</p>
+            <h3>Weiterführende Informationen</h3>
+            <p>Haushaltspläne und Jahresabschlüsse werden von vielen Kommunen als Dokumente online bereitgestellt.</p>
           </div>
           <div class="contact-card">
-            <h3>Ansprechpartner</h3>
-            <p>Typische Anlaufstellen sind kommunale Finanzverwaltungen, Rechnungsprüfungsämter und Haushaltsverantwortliche.</p>
+            <h3>Beteiligte Bereiche</h3>
+            <p>Finanzverwaltung, Rechnungsprüfung und Fachämter sind die zentralen Ansprechpartner für Haushaltsthemen.</p>
           </div>
         </div>
       </section>
     </main>
 
     <footer>
-      <p>Informationsseite zum kommunalen Haushalt. Keine offizielle Darstellung einer Stadtverwaltung.</p>
+      <p>Informationsseite zum kommunalen Haushalt von Offenburg. Keine offizielle Darstellung einer Stadtverwaltung.</p>
       <p><a href="#home">Zum Anfang</a></p>
     </footer>
+
+    <script>
+      const sections = document.querySelectorAll('section.reveal');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            } else {
+              entry.target.classList.remove('visible');
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+
+      sections.forEach((section) => observer.observe(section));
+    </script>
   </body>
 </html>
 
