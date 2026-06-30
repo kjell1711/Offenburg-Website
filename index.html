@@ -93,7 +93,6 @@
 
       main {
         position: relative;
-        overflow: hidden;
       }
 
       .hero {
@@ -513,7 +512,7 @@
         </div>
       </section>
 
-      <section id="verwaltung" class="reveal">
+      <section id="verwaltung" class="section reveal">
         <div class="section-intro">
           <div>
             <h2>Abläufe und Zuständigkeiten</h2>
@@ -545,7 +544,7 @@
         </div>
       </section>
 
-      <section id="transparenz" class="reveal">
+      <section id="transparenz" class="section reveal">
         <div class="section-intro">
           <div>
             <h2>Transparenz und Rechenschaft</h2>
@@ -573,7 +572,7 @@
         </div>
       </section>
 
-      <section id="themen" class="reveal">
+      <section id="themen" class="section reveal">
         <div class="section-intro">
           <div>
             <h2>Schwerpunkte im Haushalt</h2>
@@ -597,7 +596,7 @@
         </div>
       </section>
 
-      <section id="kontakt" class="reveal">
+      <section id="kontakt" class="section reveal">
         <div class="section-intro">
           <div>
             <h2>Hinweise und Quellen</h2>
@@ -624,7 +623,7 @@
     </footer>
 
     <script>
-      const sections = document.querySelectorAll('.section.reveal');
+      const sections = document.querySelectorAll('.reveal');
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
@@ -673,6 +672,7 @@
     </script>
   </body>
 </html>
+
 
 
 
