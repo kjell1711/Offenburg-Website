@@ -1,8 +1,8 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "changes": [
+    "2026-06-30 — neues loading (kjell1711)",
     "2026-06-30 — test (kjell1711)",
-    "2026-06-30 — Neuer Eintrag: Benutzer meldet, dass das Modal nicht angezeigt wird und bittet darum, neue Prompts automatisch in das Modal einzufügen.",
-    "Initial release: Basisinhalte und Layout"
+    "2026-06-30 — Neuer Eintrag: Benutzer meldet, dass das Modal nicht angezeigt wird und bittet darum, neue Prompts automatisch in das Modal einzufügen."
   ]
 }
