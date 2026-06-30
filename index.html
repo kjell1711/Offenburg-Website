@@ -137,8 +137,8 @@
       }
 
       .theme-toggle-track {
-        width: 42px;
-        height: 22px;
+        width: 64px;
+        height: 34px;
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.04);
         position: relative;
@@ -146,34 +146,38 @@
         display: inline-flex;
         align-items: center;
         justify-content: space-between;
-        padding: 6px 8px;
+        padding: 4px;
         gap: 8px;
       }
 
-      .theme-sun, .theme-moon {
-        font-size: 14px;
-        opacity: 0.9;
-        transition: opacity 200ms ease, transform 220ms ease;
-        line-height: 1;
+      .theme-icon {
+        width: 16px;
+        height: 16px;
+        color: rgba(255,255,255,0.95);
+        opacity: 0.95;
+        transition: color 220ms ease, transform 220ms ease, opacity 220ms ease;
+        z-index: 1;
       }
 
-      .theme-sun { transform: translateX(0); }
-      .theme-moon { transform: translateX(0); }
+      .theme-icon-sun { color: #ffd166; }
+      .theme-icon-moon { color: #c7f0ff; }
 
       .theme-toggle-thumb {
         position: absolute;
-        top: 6px;
-        left: 8px;
-        width: 22px;
-        height: 22px;
+        top: 50%;
+        left: 6px;
+        transform: translateY(-50%);
+        width: 26px;
+        height: 26px;
         border-radius: 999px;
-        background: linear-gradient(135deg, #fff, #f2f2f2);
-        box-shadow: 0 6px 18px rgba(2,8,23,0.4);
-        transition: transform 260ms cubic-bezier(.2,.9,.3,1), left 260ms ease;
+        background: linear-gradient(135deg, #ffffff, #f2f2f2);
+        box-shadow: 0 10px 24px rgba(2,8,23,0.35);
+        transition: transform 260ms cubic-bezier(.2,.9,.3,1), left 260ms ease, background 260ms ease;
+        z-index: 2;
       }
 
       .theme-toggle.active .theme-toggle-thumb {
-        transform: translateX(28px);
+        transform: translateY(-50%) translateX(28px);
         background: linear-gradient(135deg, var(--primary), var(--primary-strong));
       }
 
@@ -1123,8 +1127,8 @@
         <div class="nav-left">
           <button class="theme-toggle" id="themeToggle" aria-label="Wechsel zu hellem Modus" type="button">
             <span class="theme-toggle-track" aria-hidden="true">
-              <span class="theme-sun">☀️</span>
-              <span class="theme-moon">🌙</span>
+              <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M6.76 4.84l-1.8-1.79L3.17 4.83l1.79 1.8 1.8-1.79zM1 13h3v-2H1v2zm10-9h2V1h-2v3zm7.03 2.05l1.79-1.8-1.79-1.79-1.8 1.79 1.8 1.8zM17 13h3v-2h-3v2zm-5 6c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm3.24 1.16l1.8 1.79 1.79-1.79-1.79-1.8-1.8 1.8zM6.76 19.16l-1.8 1.79 1.79 1.79 1.8-1.79-1.79-1.79z"/></svg>
+              <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M9.37 5.51A7 7 0 0017 13a7 7 0 11-7.63-7.49z"/></svg>
               <span class="theme-toggle-thumb" id="themeToggleThumb"></span>
             </span>
             <span class="theme-toggle-text">Dark</span>
@@ -1392,7 +1396,7 @@
       const quizTotalPercent = document.getElementById('quizTotalPercent');
       const quizTotalAmount = document.getElementById('quizTotalAmount');
       const themeToggle = document.getElementById('themeToggle');
-      const themeText = themeToggle.querySelector('.theme-toggle-text');
+      const themeText = themeToggle ? themeToggle.querySelector('.theme-toggle-text') : null;
       const bodyElement = document.body;
       const quizTotalAmountBase = 10000000;
       const themeKey = 'offenburgTheme';
@@ -1417,9 +1421,11 @@
       function applyTheme(theme) {
         bodyElement.dataset.theme = theme;
         const isLight = theme === 'light';
-        themeToggle.classList.toggle('active', isLight);
-        themeToggle.setAttribute('aria-label', isLight ? 'Wechsel zu dunklem Modus' : 'Wechsel zu hellem Modus');
-        themeText.textContent = isLight ? 'Light' : 'Dark';
+        if (themeToggle) {
+          themeToggle.classList.toggle('active', isLight);
+          themeToggle.setAttribute('aria-label', isLight ? 'Wechsel zu dunklem Modus' : 'Wechsel zu hellem Modus');
+        }
+        if (themeText) themeText.textContent = isLight ? 'Light' : 'Dark';
       }
 
       function toggleTheme() {
@@ -1577,36 +1583,45 @@
         chartRect = null;
       }
 
-      openQuizButtons.forEach((button) => {
-        button.addEventListener('click', (event) => {
-          event.preventDefault();
-          quizModal.classList.add('active');
-          quizModal.hidden = false;
-          renderPie();
+      // Only wire up quiz / pie interactions if the pie DOM exists
+      if (pieChart) {
+        openQuizButtons.forEach((button) => {
+          button.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (quizModal) {
+              quizModal.classList.add('active');
+              quizModal.hidden = false;
+            }
+            try { renderPie(); } catch (e) { /* ignore pie render errors */ }
+          });
         });
-      });
 
-      if (closeQuiz) {
-        closeQuiz.addEventListener('click', () => {
-          quizModal.classList.remove('active');
-          quizModal.hidden = true;
-        });
-      }
-
-      quizModal.addEventListener('click', (event) => {
-        if (event.target === quizModal) {
-          quizModal.classList.remove('active');
-          quizModal.hidden = true;
+        if (closeQuiz && quizModal) {
+          closeQuiz.addEventListener('click', () => {
+            quizModal.classList.remove('active');
+            quizModal.hidden = true;
+          });
         }
-      });
 
-      document.addEventListener('pointermove', onPieDrag);
-      document.addEventListener('pointerup', stopPieDrag);
-      document.addEventListener('pointercancel', stopPieDrag);
+        if (quizModal) {
+          quizModal.addEventListener('click', (event) => {
+            if (event.target === quizModal) {
+              quizModal.classList.remove('active');
+              quizModal.hidden = true;
+            }
+          });
+        }
+
+        document.addEventListener('pointermove', onPieDrag);
+        document.addEventListener('pointerup', stopPieDrag);
+        document.addEventListener('pointercancel', stopPieDrag);
+      }
 
       if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
       try { if (typeof loadTheme === 'function') loadTheme(); } catch (e) {}
-      renderPie();
+      if (pieChart) {
+        try { renderPie(); } catch (e) { /* ignore */ }
+      }
 
       // Version / changelog fetch + secret modal
       const siteVersionBtn = document.getElementById('siteVersion');
