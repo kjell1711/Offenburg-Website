@@ -137,8 +137,8 @@
       }
 
       .theme-toggle-track {
-        width: 42px;
-        height: 22px;
+        width: 64px;
+        height: 34px;
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.04);
         position: relative;
@@ -146,34 +146,38 @@
         display: inline-flex;
         align-items: center;
         justify-content: space-between;
-        padding: 6px 8px;
+        padding: 4px;
         gap: 8px;
       }
 
-      .theme-sun, .theme-moon {
-        font-size: 14px;
-        opacity: 0.9;
-        transition: opacity 200ms ease, transform 220ms ease;
-        line-height: 1;
+      .theme-icon {
+        width: 16px;
+        height: 16px;
+        color: rgba(255,255,255,0.95);
+        opacity: 0.95;
+        transition: color 220ms ease, transform 220ms ease, opacity 220ms ease;
+        z-index: 1;
       }
 
-      .theme-sun { transform: translateX(0); }
-      .theme-moon { transform: translateX(0); }
+      .theme-icon-sun { color: #ffd166; }
+      .theme-icon-moon { color: #c7f0ff; }
 
       .theme-toggle-thumb {
         position: absolute;
-        top: 6px;
-        left: 8px;
-        width: 22px;
-        height: 22px;
+        top: 50%;
+        left: 6px;
+        transform: translateY(-50%);
+        width: 26px;
+        height: 26px;
         border-radius: 999px;
-        background: linear-gradient(135deg, #fff, #f2f2f2);
-        box-shadow: 0 6px 18px rgba(2,8,23,0.4);
-        transition: transform 260ms cubic-bezier(.2,.9,.3,1), left 260ms ease;
+        background: linear-gradient(135deg, #ffffff, #f2f2f2);
+        box-shadow: 0 10px 24px rgba(2,8,23,0.35);
+        transition: transform 260ms cubic-bezier(.2,.9,.3,1), left 260ms ease, background 260ms ease;
+        z-index: 2;
       }
 
       .theme-toggle.active .theme-toggle-thumb {
-        transform: translateX(28px);
+        transform: translateY(-50%) translateX(28px);
         background: linear-gradient(135deg, var(--primary), var(--primary-strong));
       }
 
@@ -372,7 +376,12 @@
 
       .modal-backdrop {
         position: fixed;
-        inset: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 100vh;
         background: rgba(4, 10, 20, 0.78);
         display: none;
         align-items: center;
@@ -1001,7 +1010,171 @@
       }
 
       .service-item {
-        background: var(--surface);
+        background: linear-gradient(135deg, rgba(78,162,255,0.04), transparent);
+        border: 1px solid rgba(78,162,255,0.12);
+      }
+
+      /* Glossar / Tooltip Styles */
+      .term {
+        position: relative;
+        cursor: help;
+        border-bottom: 2px dashed var(--primary);
+        font-weight: 600;
+      }
+
+      .term::after {
+        content: ' [?]';
+        font-size: 0.85em;
+        opacity: 0.7;
+        margin-left: 2px;
+      }
+
+      .tooltip {
+        position: absolute;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%) scale(0.95);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 200ms ease, transform 200ms ease, visibility 200ms ease;
+        background: rgba(30,51,81,0.88);
+        border: 1px solid rgba(78,162,255,0.35);
+        color: var(--text-muted);
+        padding: 0.65rem 0.9rem;
+        border-radius: 0.65rem;
+        font-size: 0.85rem;
+        max-width: 180px;
+        text-align: center;
+        white-space: normal;
+        z-index: 100;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        font-weight: 500;
+      }
+
+      .tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent;
+        border-top-color: rgba(30,51,81,0.88);
+      }
+
+      .term:hover .tooltip {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) scale(1);
+      }
+
+      /* Budget / Haushalt Tabelle */
+      .budget-table {
+        width: 100%;
+        display: grid;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+
+      .budget-row {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 0.85rem;
+        cursor: pointer;
+        transition: all 220ms ease;
+        align-items: center;
+      }
+
+      .budget-row:hover {
+        background: rgba(78,162,255,0.1);
+        border-color: rgba(78,162,255,0.3);
+        transform: translateX(4px);
+      }
+
+      .budget-label {
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      .budget-amount {
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 1.05rem;
+      }
+
+      .budget-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        font-size: 1.2rem;
+      }
+
+      .budget-details {
+        grid-column: 1 / -1;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 300ms ease, opacity 300ms ease;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        padding: 0;
+      }
+
+      .budget-row.expanded .budget-details {
+        max-height: 200px;
+        opacity: 1;
+        padding: 0.75rem 0 0 0;
+        border-top: 1px solid rgba(255,255,255,0.08);
+      }
+
+      /* Details / Erklär-Boxen */
+      .detail-box {
+        background: linear-gradient(135deg, rgba(78,162,255,0.08), rgba(127,212,250,0.04));
+        border: 2px solid rgba(78,162,255,0.2);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .detail-box h4 {
+        margin: 0 0 0.75rem 0;
+        color: var(--primary);
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .detail-box h4::before {
+        content: '📋';
+        font-size: 1.3rem;
+      }
+
+      .detail-box p {
+        margin: 0.5rem 0;
+        color: var(--text-muted);
+        line-height: 1.7;
+      }
+
+      .detail-box strong {
+        color: var(--text);
+      }
+
+      .detail-box .example {
+        background: rgba(78,162,255,0.1);
+        border-left: 3px solid var(--primary);
+        padding: 0.75rem 1rem;
+        margin-top: 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+        font-style: italic;
       }
 
       .contact-list {
@@ -1096,21 +1269,48 @@
 
       .site-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-      .loader-ring {
-        width: 68px;
-        height: 28px;
-        border-radius: 999px;
-        background: linear-gradient(90deg,var(--primary),var(--primary-strong));
-        box-shadow: 0 18px 60px rgba(78,162,255,0.12);
-        transform-origin: center;
-        animation: loaderPulse 900ms cubic-bezier(.2,.8,.2,1) infinite;
+      .site-loader .loader-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
       }
 
-      @keyframes loaderPulse {
-        0% { transform: scaleX(0.9) translateY(0); }
-        50% { transform: scaleX(1.05) translateY(-6px); }
-        100% { transform: scaleX(0.9) translateY(0); }
+      .loader-text {
+        color: var(--text);
+        opacity: 0.9;
+        font-weight: 600;
+        font-size: 0.95rem;
+        letter-spacing: 0.2px;
       }
+
+      .loader-ring {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: conic-gradient(var(--primary) 0deg, var(--primary-strong) 140deg, rgba(255,255,255,0.06) 140deg);
+        display: grid;
+        place-items: center;
+        box-shadow: 0 20px 60px rgba(78,162,255,0.08);
+        animation: loaderSpin 900ms linear infinite;
+        position: relative;
+      }
+
+      .loader-ring::before {
+        content: '';
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--surface);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+      }
+
+      @keyframes loaderSpin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      .site-loader.fade { opacity: 0; }
     </style>
   </head>
   <body>
@@ -1123,8 +1323,8 @@
         <div class="nav-left">
           <button class="theme-toggle" id="themeToggle" aria-label="Wechsel zu hellem Modus" type="button">
             <span class="theme-toggle-track" aria-hidden="true">
-              <span class="theme-sun">☀️</span>
-              <span class="theme-moon">🌙</span>
+              <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M6.76 4.84l-1.8-1.79L3.17 4.83l1.79 1.8 1.8-1.79zM1 13h3v-2H1v2zm10-9h2V1h-2v3zm7.03 2.05l1.79-1.8-1.79-1.79-1.8 1.79 1.8 1.8zM17 13h3v-2h-3v2zm-5 6c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm3.24 1.16l1.8 1.79 1.79-1.79-1.79-1.8-1.8 1.8zM6.76 19.16l-1.8 1.79 1.79 1.79 1.8-1.79-1.79-1.79z"/></svg>
+              <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M9.37 5.51A7 7 0 0017 13a7 7 0 11-7.63-7.49z"/></svg>
               <span class="theme-toggle-thumb" id="themeToggleThumb"></span>
             </span>
             <span class="theme-toggle-text">Dark</span>
@@ -1171,7 +1371,7 @@
         <div class="info-cards">
           <article class="info-card">
             <h3>Wo Geld herkommt</h3>
-            <p>Der Haushalt bekommt Geld aus Steuern, Gebühren und Zuschüssen vom Bund oder Land. Beispiele: Grundsteuer, Gewerbesteuer und Hundesteuer.</p>
+            <p>Der Haushalt bekommt Geld aus <span class="term">Steuern<span class="tooltip">Geld, das Bürger bezahlen. Mit diesem Geld baut die Stadt Straßen, Schulen und vieles mehr.</span></span>, Gebühren und Zuschüssen vom <span class="term">Bund<span class="tooltip">Der deutsche Staat unterstützt Städte bei großen Projekten.</span></span> oder Land. Beispiele: Grundsteuer, Gewerbesteuer und Hundesteuer.</p>
           </article>
           <article class="info-card">
             <h3>Wofür Geld ausgegeben wird</h3>
@@ -1193,44 +1393,161 @@
           <article class="info-card">
             <h3>Zum Anklicken: Was willst du wissen?</h3>
             <details>
-              <summary><strong>Steuern</strong> — Was ist das?</summary>
-              <p>Steuern ist Geld, das wir alle geben. Ein Teil davon bezahlt Straßen, Schulen und Parks.</p>
+              <summary><strong class="term">Steuern<span class="tooltip">Geld, das alle bezahlen, um Schulen, Straßen und Dienste zu bezahlen.</span></strong> — Was ist das?</summary>
+              <p>Steuern ist Geld, das wir alle geben. Ein Teil davon bezahlt Straßen, Schulen und Parks. Es gibt verschiedene Steuern: die Grundsteuer (für Häuser), Gewerbesteuer (für Läden) und viele mehr.</p>
             </details>
             <details>
-              <summary><strong>Fördermittel</strong> — Was bedeutet das?</summary>
-              <p>Fördermittel sind Zuschüsse von Bund oder Land. Sie helfen, größere Projekte wie Bahnhofs-Sanierung oder Klimaschutz zu bezahlen.</p>
+              <summary><strong class="term">Fördermittel<span class="tooltip">Zuschüsse von Bund oder Land, um große Projekte zu bezahlen.</span></strong> — Was bedeutet das?</summary>
+              <p>Fördermittel sind Zuschüsse von Bund oder Land. Sie helfen, größere Projekte wie Bahnhofs-Sanierung oder Klimaschutz zu bezahlen. Ohne diese Hilfe könnten viele Projekte nicht umgesetzt werden.</p>
             </details>
             <details>
-              <summary><strong>Haushaltsplan</strong> — Warum ist das wichtig?</summary>
-              <p>Der Plan sagt, wofür Geld bestimmt ist. Er macht klar, was zuerst bezahlt wird und was später möglich ist.</p>
+              <summary><strong class="term">Haushaltsplan<span class="tooltip">Schriftlicher Plan für alle Einnahmen und Ausgaben der Stadt.</span></strong> — Warum ist das wichtig?</summary>
+              <p>Der Plan sagt, wofür Geld bestimmt ist. Er macht klar, was zuerst bezahlt wird und was später möglich ist. So können alle sehen, ob die Stadt gut wirtschaftet.</p>
+            </details>
+            <details>
+              <summary><strong class="term">Einnahmen<span class="tooltip">Geld, das die Stadt bekommt (z.B. durch Steuern und Gebühren).</span></strong> — Wo kommt das Geld her?</summary>
+              <p>Einnahmen sind alle Geldquellen. Die Stadt bekommt Geld aus Steuern (von Bürgern und Firmen), Gebühren (z.B. für Parkplätze, Wasser, Müll), Zuschüsse vom Land/Bund und manchmal auch durch Verkauf von städtischen Grundstücken.</p>
             </details>
           </article>
         </div>
+
+        <article class="info-card" style="margin-top: 2rem;">
+          <h3 style="margin-top: 0;">Wofür wird Geld in Offenburg ausgegeben? (Geldverteilung)</h3>
+          <p>Hier sind die wichtigsten Bereiche, in die der Haushalt Geld verteilt:</p>
+          <div class="budget-table">
+            <div class="budget-row">
+              <span class="budget-label">🎓 Schulen & Bildung</span>
+              <span class="budget-amount">~18%</span>
+              <span class="budget-icon">▼</span>
+              <div class="budget-details">Lehrer, Schulgebäude, Unterrichtsmaterial, Schulessen. Das ist ein Schwerpunkt, weil Bildung für die Zukunft wichtig ist.</div>
+            </div>
+            <div class="budget-row">
+              <span class="budget-label">🚗 Verkehr & Infrastruktur</span>
+              <span class="budget-amount">~16%</span>
+              <span class="budget-icon">▼</span>
+              <div class="budget-details">Straßenreparaturen, Beleuchtung, Bahnhof, öffentliche Verkehrsmittel. Damit Jugendliche und alle mobil bleiben.</div>
+            </div>
+            <div class="budget-row">
+              <span class="budget-label">🏥 Gesundheit & Soziales</span>
+              <span class="budget-amount">~14%</span>
+              <span class="budget-icon">▼</span>
+              <div class="budget-details">Krankenhäuser, Altenheime, Sozialarbeit, Beratungsstellen. Hilfe für Menschen, die sie brauchen.</div>
+            </div>
+            <div class="budget-row">
+              <span class="budget-label">🎪 Freizeit & Jugend</span>
+              <span class="budget-amount">~8%</span>
+              <span class="budget-icon">▼</span>
+              <div class="budget-details">Jugendtreffs, Sportplätze, Spielplätze, Veranstaltungen, Offene Jugendarbeit. Plätze für dich zum Abhängen, Sport machen und Freunde treffen.</div>
+            </div>
+            <div class="budget-row">
+              <span class="budget-label">👮 Sicherheit & Feuerwehr</span>
+              <span class="budget-amount">~9%</span>
+              <span class="budget-icon">▼</span>
+              <div class="budget-details">Polizei, Feuerwehr, Rettungsdienste. Sie sind schnell da, wenn etwas Schlimmes passiert.</div>
+            </div>
+            <div class="budget-row">
+              <span class="budget-label">🌳 Umwelt & Park</span>
+              <span class="budget-amount">~7%</span>
+              <span class="budget-icon">▼</span>
+              <div class="budget-details">Parks, Grünflächen, Bäume, Klimaschutz. Damit die Stadt schön grün bleibt und die Luft sauber ist.</div>
+            </div>
+            <div class="budget-row">
+              <span class="budget-label">🏛️ Stadtverwaltung & Verwaltung</span>
+              <span class="budget-amount">~12%</span>
+              <span class="budget-icon">▼</span>
+              <div class="budget-details">Rathaus-Mitarbeiter, Büromaterial, Computer. Sie planen alles und kümmern sich um die Stadt.</div>
+            </div>
+            <div class="budget-row">
+              <span class="budget-label">🎭 Kultur & Freizeit</span>
+              <span class="budget-amount">~6%</span>
+              <span class="budget-icon">▼</span>
+              <div class="budget-details">Museum, Theater, Konzerte, Bibliothek. Kultur und Spaß für alle.</div>
+            </div>
+            <div class="budget-row">
+              <span class="budget-label">🏠 Wohnen & Stadtentwicklung</span>
+              <span class="budget-amount">~5%</span>
+              <span class="budget-icon">▼</span>
+              <div class="budget-details">Neue Wohnungen, Stadtsanierung, Stadtplanung. Die Stadt soll schöner und besser zum Leben sein.</div>
+            </div>
+            <div class="budget-row">
+              <span class="budget-label">💰 Schulden & Zinsen</span>
+              <span class="budget-amount">~5%</span>
+              <span class="budget-icon">▼</span>
+              <div class="budget-details">Kosten für alte Kredite. Wenn die Stadt Geld geliehen hat, muss es zurückgeben und Zinsen zahlen.</div>
+            </div>
+          </div>
+        </article>
       </section>
 
       <section id="verwaltung" class="section reveal">
+        <div class="section-intro">
+          <div>
+            <h2>Jugendliche & der Haushalt: Wie du mitbestimmen kannst</h2>
+            <p>Der Haushalt interessiert dich vielleicht nicht auf den ersten Blick. Aber: Mit diesem Geld werden die Orte gebaut und bezahlt, an denen du abhängst! Hier erfährst du, wie du mitbestimmen kannst.</p>
+          </div>
+        </div>
 
         <div class="service-list">
           <div class="service-item">
-            <h3>Wie wird Geld verteilt?</h3>
-            <p>Die Stadt prüft, welche Projekte wichtig sind. Schulen, Spielplätze, Bahnhofsanlagen und Notdienste stehen oft ganz oben auf der Liste.</p>
+            <h3>🎯 Offene Jugendarbeit – Dein Platz zum Mitmachen</h3>
+            <p>Die Offene Jugendarbeit ist für dich! Du kannst einfach hingehen, ohne dich anzumelden. Es gibt:</p>
+            <ul>
+              <li><strong>Jugendtreffs:</strong> Plätze zum Abhängen, Musik hören, Spiele spielen oder einfach Freunde treffen.</li>
+              <li><strong>Projekte:</strong> Workshops zu Musik, Gaming, Sport oder Kreativem.</li>
+              <li><strong>Beratung:</strong> Wenn du Probleme hast, helfen dir die Sozialarbeiter weiter.</li>
+            </ul>
+            <p><strong>Wichtig:</strong> In der Offenen Jugendarbeit kannst du deine Ideen einbringen! Du hast eine Idee für ein Event, ein Projekt oder Veränderungen? Die Mitarbeiter hören dir zu und helfen, es umzusetzen.</p>
           </div>
+
           <div class="service-item">
-            <h3>Wie können Jugendliche mitmachen?</h3>
-            <p>Jugendliche können eigene Vorschläge einbringen, beim Jugendrat mitreden oder sich bei der Stadtverwaltung informieren.</p>
+            <h3>🎤 Sag's Laut – Deine Stimme zu Haushalt & Politik</h3>
+            <p><strong>Sag's Laut</strong> ist ein Projekt, bei dem <strong>du direkt mitentscheidest</strong>. Jugendliche wie du können:</p>
+            <ul>
+              <li>Ideen für neue Projekte einreichen (neue Spielplätze, Skateparks, Musikräume, etc.)</li>
+              <li>Abstimmen, welche Projekte die Stadt mit Haushaltsgeld umsetzen soll</li>
+              <li>Die Stadt befragt dich zu Themen, die dich betreffen</li>
+            </ul>
+            <p><strong>Beispiel:</strong> Du wünschst dir eine Calisthenics-Anlage (outdoor Fitness-Park). Du machst einen Vorschlag. Andere Jugendliche stimmen ab. Wenn viele zustimmen, berücksichtigt die Stadt das im Haushalt!</p>
           </div>
+
           <div class="service-item">
-            <h3>Wie kann man Geld beanspruchen?</h3>
-            <p>Vereine und Gruppen schicken Ideen ins Rathaus. Wenn der Plan passt, kann es Zuschüsse oder Projektgeld geben.</p>
+            <h3>⚽ Vereine & Verbände – Geld für deine Leidenschaften</h3>
+            <p>Je du bei einem Sportverein, einer Musikgruppe oder einem Kulturprojekt bist: Diese <span class="term">Vereine<span class="tooltip">Zusammenschlüsse von Menschen mit gemeinsamen Interessen (z.B. Fußballclub, Musikgruppe, Theaterensemble).</span></span> bekommen Geld vom Haushalt!</p>
+            <ul>
+              <li><strong>Sportvereine:</strong> Fußball, Basketball, Schwimmen, Reiten – alles wird mit Haushaltsgeld unterstützt.</li>
+              <li><strong>Kulturgruppen:</strong> Theater, Orchester, Bands, Kunstprojekte.</li>
+              <li><strong>Jugendinitiativen:</strong> Umweltprojekte, Soziales Engagement, Gaming-Clubs.</li>
+            </ul>
+            <p><strong>Wichtig:</strong> Dein Verein kann Zuschüsse beantragen! Das ist kein Betteln – es ist dein Recht. Die Stadt hat Geld dafür reserviert, damit Jugendliche die Chance haben, ihre Leidenschaften zu verfolgen.</p>
           </div>
+
           <div class="service-item">
-            <h3>Wie werden Haushalte verglichen?</h3>
-            <p>Kommunen schauen sich gegenseitig an: Wer hat mehr Geld, wer weniger? Das hilft, besser zu planen und voneinander zu lernen.</p>
+            <h3>📚 Warum sollte das alles dich interessieren?</h3>
+            <p>Es ist nicht nur spannend, sondern auch wichtig:</p>
+            <ul>
+              <li><strong>Deine Zukunft:</strong> Der Haushalt entscheidet über deine Schulen, Schulhofe, Sportanlagen. Mit Mitbestimmung sorgst du dafür, dass es dir und deinen Freunden gut geht.</li>
+              <li><strong>Früh lernen:</strong> Du verstehst schon jetzt, wie die Stadt, die Region und der Staat funktionieren. Das ist wichtiges Wissen für später!</li>
+              <li><strong>Mitsprache:</strong> Politik ist nicht weit weg – sie passiert hier, in deiner Stadt. Du kannst mitbestimmen!</li>
+              <li><strong>Verantwortung:</strong> Wenn du verstehst, dass Geld nicht unendlich ist, lernst du sparsam und sinnvoll damit umzugehen.</li>
+            </ul>
           </div>
+
           <div class="service-item">
-            <h3>Warum sollte Wirtschaft gut erklärt werden?</h3>
-            <p>Wenn Jugendliche verstehen, wie Geld geplant wird, können sie mitreden und wichtige Entscheidungen mitgestalten.</p>
+            <h3>🤝 Wie du konkret mitbestimmen kannst</h3>
+            <p><strong>Schritt-für-Schritt:</strong></p>
+            <ol style="margin-left: 1rem;">
+              <li><strong>Offene Jugendarbeit besuchen:</strong> Komm in einen Jugendtreff oder zu einem Event. Erzähl den Mitarbeitern deine Idee.</li>
+              <li><strong>Bei Sag's Laut teilnehmen:</strong> Halte Ausschau nach Abstimmungen und Umfragen (Info im Jugendtreff oder online).</li>
+              <li><strong>Mit Freunden abstimmen:</strong> Bringt Ideen ein, sammelt Unterschriften, macht euch Gehör!</li>
+              <li><strong>Verein gründen oder beitreten:</strong> Mit einem Club hast du noch mehr Einfluss und Unterstützung.</li>
+              <li><strong>Rathaus besuchen:</strong> Die Stadtverwaltung ist offen für Fragen. Du kannst einen Termin machen und fragen, was mit deinen Vorschlägen passiert ist.</li>
+            </ol>
           </div>
+        </div>
+
+        <div class="detail-box">
+          <h4>Echtes Beispiel aus Offenburg</h4>
+          <p>Eine Gruppe Jugendlicher wünschte sich einen besseren Treffpunkt mit Gaming-Ecke und Außenbereich. Sie machten einen Vorschlag bei der Offenen Jugendarbeit. Der Vorschlag kam in die Haushaltsdiskussion. Nach Diskussionen bewilligte die Stadt Geld dafür – und jetzt gibt es!  Das zeigt: <strong>Deine Idee kann wirklich etwas verändern!</strong></p>
         </div>
       </section>
 
@@ -1257,7 +1574,7 @@
           </div>
           <div class="fact">
             <strong>Mitreden</strong>
-            <span>Jugendliche können Vorschläge machen und beim Haushalt mitreden, zum Beispiel im Jugendparlament.</span>
+            <span>Jugendliche können Vorschläge machen und beim Haushalt mitreden, zum Beispiel in der <span class="term">offenen Jugendarbeit<span class="tooltip">Orte und Projekte, wo Jugendliche ihre Ideen einbringen können.</span></span>.</span>
           </div>
         </div>
       </section>
@@ -1325,10 +1642,13 @@
       <p><a href="#home">Zum Anfang</a></p>
     </footer>
 
-    <!-- very small version badge (bottom of page) -->
-    <div style="text-align:center; margin-top:8px;">
+    <!-- very small version badge & creators (bottom of page) -->
+    <div style="text-align:center; margin-top:8px; display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap;">
       <button id="siteVersion" title="Version anzeigen" style="border:0;background:transparent;color:var(--text-muted);font-size:10px;opacity:0.8;cursor:pointer;padding:6px 8px;">
         v<span id="siteVersionNumber">—</span>
+      </button>
+      <button id="creatorsBadge" title="Ersteller" style="border:0;background:transparent;color:var(--text-muted);font-size:10px;opacity:0.8;cursor:pointer;padding:6px 8px;">
+        Ersteller
       </button>
     </div>
 
@@ -1344,6 +1664,35 @@
         <div class="modal-body" id="versionModalBody">
           <p class="modal-note">Letzte Änderungen (aktualisiert nach jedem Commit)</p>
           <ul id="versionChangeList" style="margin:0; padding-left:1.1rem;"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- creators modal -->
+    <div class="modal-backdrop" id="creatorsModal" role="dialog" aria-modal="true" aria-labelledby="creatorsModalTitle">
+      <div class="modal-content" style="max-width: 420px;">
+        <div class="modal-header">
+          <h2 id="creatorsModalTitle" style="margin: 0; font-size: 1.4rem;">👥 Ersteller</h2>
+          <div class="modal-header-actions">
+            <button class="modal-close" id="closeCreatorsModal" aria-label="Schließen">✕</button>
+          </div>
+        </div>
+        <div class="modal-body" id="creatorsModalBody" style="padding: 1.5rem 0;">
+          <div style="display:grid; gap:0.8rem;">
+            <div style="padding:1rem; background:rgba(78,162,255,0.08); border:1px solid rgba(78,162,255,0.2); border-radius:0.85rem; text-align:center;">
+              <p style="margin:0; font-weight:600; color:var(--text);">Jenaro</p>
+            </div>
+            <div style="padding:1rem; background:rgba(78,162,255,0.08); border:1px solid rgba(78,162,255,0.2); border-radius:0.85rem; text-align:center;">
+              <p style="margin:0; font-weight:600; color:var(--text);">Youssef</p>
+            </div>
+            <div style="padding:1rem; background:rgba(78,162,255,0.08); border:1px solid rgba(78,162,255,0.2); border-radius:0.85rem; text-align:center;">
+              <p style="margin:0; font-weight:600; color:var(--text);">Julius</p>
+            </div>
+            <div style="padding:1rem; background:rgba(78,162,255,0.08); border:1px solid rgba(78,162,255,0.2); border-radius:0.85rem; text-align:center;">
+              <p style="margin:0; font-weight:600; color:var(--text);">Kjell</p>
+            </div>
+          </div>
+          <p style="margin-top:1.5rem; text-align:center; color:var(--text-muted); font-size:0.9rem; padding:0 0.5rem;">Danke für euer Engagement für dieses Bildungsprojekt! 🙏</p>
         </div>
       </div>
     </div>
@@ -1392,7 +1741,7 @@
       const quizTotalPercent = document.getElementById('quizTotalPercent');
       const quizTotalAmount = document.getElementById('quizTotalAmount');
       const themeToggle = document.getElementById('themeToggle');
-      const themeText = themeToggle.querySelector('.theme-toggle-text');
+      const themeText = themeToggle ? themeToggle.querySelector('.theme-toggle-text') : null;
       const bodyElement = document.body;
       const quizTotalAmountBase = 10000000;
       const themeKey = 'offenburgTheme';
@@ -1417,9 +1766,11 @@
       function applyTheme(theme) {
         bodyElement.dataset.theme = theme;
         const isLight = theme === 'light';
-        themeToggle.classList.toggle('active', isLight);
-        themeToggle.setAttribute('aria-label', isLight ? 'Wechsel zu dunklem Modus' : 'Wechsel zu hellem Modus');
-        themeText.textContent = isLight ? 'Light' : 'Dark';
+        if (themeToggle) {
+          themeToggle.classList.toggle('active', isLight);
+          themeToggle.setAttribute('aria-label', isLight ? 'Wechsel zu dunklem Modus' : 'Wechsel zu hellem Modus');
+        }
+        if (themeText) themeText.textContent = isLight ? 'Light' : 'Dark';
       }
 
       function toggleTheme() {
@@ -1577,36 +1928,45 @@
         chartRect = null;
       }
 
-      openQuizButtons.forEach((button) => {
-        button.addEventListener('click', (event) => {
-          event.preventDefault();
-          quizModal.classList.add('active');
-          quizModal.hidden = false;
-          renderPie();
+      // Only wire up quiz / pie interactions if the pie DOM exists
+      if (pieChart) {
+        openQuizButtons.forEach((button) => {
+          button.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (quizModal) {
+              quizModal.classList.add('active');
+              quizModal.hidden = false;
+            }
+            try { renderPie(); } catch (e) { /* ignore pie render errors */ }
+          });
         });
-      });
 
-      if (closeQuiz) {
-        closeQuiz.addEventListener('click', () => {
-          quizModal.classList.remove('active');
-          quizModal.hidden = true;
-        });
-      }
-
-      quizModal.addEventListener('click', (event) => {
-        if (event.target === quizModal) {
-          quizModal.classList.remove('active');
-          quizModal.hidden = true;
+        if (closeQuiz && quizModal) {
+          closeQuiz.addEventListener('click', () => {
+            quizModal.classList.remove('active');
+            quizModal.hidden = true;
+          });
         }
-      });
 
-      document.addEventListener('pointermove', onPieDrag);
-      document.addEventListener('pointerup', stopPieDrag);
-      document.addEventListener('pointercancel', stopPieDrag);
+        if (quizModal) {
+          quizModal.addEventListener('click', (event) => {
+            if (event.target === quizModal) {
+              quizModal.classList.remove('active');
+              quizModal.hidden = true;
+            }
+          });
+        }
+
+        document.addEventListener('pointermove', onPieDrag);
+        document.addEventListener('pointerup', stopPieDrag);
+        document.addEventListener('pointercancel', stopPieDrag);
+      }
 
       if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
       try { if (typeof loadTheme === 'function') loadTheme(); } catch (e) {}
-      renderPie();
+      if (pieChart) {
+        try { renderPie(); } catch (e) { /* ignore */ }
+      }
 
       // Version / changelog fetch + secret modal
       const siteVersionBtn = document.getElementById('siteVersion');
@@ -1687,6 +2047,35 @@
 
       // initial load
       loadVersionInfo();
+
+      // Creators modal
+      const creatorsBadge = document.getElementById('creatorsBadge');
+      const creatorsModal = document.getElementById('creatorsModal');
+      const closeCreatorsModal = document.getElementById('closeCreatorsModal');
+
+      if (creatorsBadge && creatorsModal) {
+        creatorsBadge.addEventListener('click', () => {
+          creatorsModal.classList.add('active');
+        });
+
+        closeCreatorsModal.addEventListener('click', () => {
+          creatorsModal.classList.remove('active');
+        });
+
+        creatorsModal.addEventListener('click', (e) => {
+          if (e.target === creatorsModal) {
+            creatorsModal.classList.remove('active');
+          }
+        });
+      }
+
+      // Close modals on Escape
+      document.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape') {
+          if (versionModal) versionModal.classList.remove('active');
+          if (creatorsModal) creatorsModal.classList.remove('active');
+        }
+      });
     </script>
   </body>
 </html>
