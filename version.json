@@ -1,8 +1,8 @@
 {
-  "version": "1.0.4",
+  "version": "1.0.5",
   "changes": [
+    "2026-07-01 — Update Live Share link and change label (kjell1711)",
     "2026-07-01 — toggel button überarbeitet. (kjell1711)",
-    "2026-06-30 — neues loading (kjell1711)",
-    "2026-06-30 — test (kjell1711)"
+    "2026-06-30 — neues loading (kjell1711)"
   ]
 }
